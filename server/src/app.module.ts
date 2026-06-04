@@ -4,6 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import databaseConfig from './config/database.config';
+import { TripsModule } from './trips/trips.module';
+import { DaysModule } from './days/days.module';
+import { EntriesModule } from './entries/entries.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -24,8 +28,13 @@ import databaseConfig from './config/database.config';
         synchronize: true,
       }),
     }),
+    TripsModule,
+    DaysModule,
+    EntriesModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+  exports: [TripsModule],
 })
 export class AppModule {}
