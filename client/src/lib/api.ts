@@ -1,5 +1,5 @@
 const API_BASE = "http://localhost:8080/api"
-const ACCESS_KEY = "my-access-key"
+const ACCESS_KEY = "travel"
 
 export interface TripData {
   id: string
@@ -8,6 +8,62 @@ export interface TripData {
   coverPhotoUrl: string | null
   startDate: string
   endDate: string
+}
+
+export interface EntryData {
+  id: string
+  dayId: string
+  type: "text" | "photo"
+  content: string | null
+  photoUrl: string | null
+  caption: string | null
+  sortOrder: number
+}
+
+export interface DayData {
+  id: string
+  tripId: string
+  dayNumber: number
+  date: string
+  title: string | null
+  summary: string | null
+  coverPhotoUrl: string | null
+  entries?: EntryData[]
+}
+
+export interface DayWithEntries extends DayData {
+  entries: EntryData[]
+}
+
+export async function fetchDayBySlug(slug: string, dayNumber: number): Promise<DayWithEntries> {
+  const res = await fetch(`${API_BASE}/trips/${slug}/days/${dayNumber}`, {
+    headers: { "x-access-key": ACCESS_KEY },
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  return res.json()
+}
+
+export interface TripWithDays extends TripData {
+  description: string | null
+  days: DayData[]
+}
+
+export async function fetchTripBySlug(slug: string): Promise<TripWithDays> {
+  const res = await fetch(`${API_BASE}/trips/${slug}`, {
+    headers: { "x-access-key": ACCESS_KEY },
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  return res.json()
 }
 
 export async function fetchTrips(): Promise<TripData[]> {
@@ -78,6 +134,87 @@ export async function updateTrip(
   }
 
   return res.json()
+}
+
+export async function fetchTripById(id: string, adminKey: string): Promise<TripWithDays> {
+  const res = await fetch(`${API_BASE}/admin/trips/${id}`, {
+    headers: { "x-admin-key": adminKey },
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  return res.json()
+}
+
+export async function createDay(
+  tripId: string,
+  data: {
+    dayNumber: number
+    date: string
+    title?: string | null
+    summary?: string | null
+    coverPhotoUrl?: string | null
+  },
+  adminKey: string,
+) {
+  const res = await fetch(`${API_BASE}/admin/trips/${tripId}/days`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-admin-key": adminKey,
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  return res.json()
+}
+
+export async function updateDay(
+  id: string,
+  data: {
+    dayNumber?: number
+    date?: string
+    title?: string | null
+    summary?: string | null
+    coverPhotoUrl?: string | null
+  },
+  adminKey: string,
+) {
+  const res = await fetch(`${API_BASE}/admin/days/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "x-admin-key": adminKey,
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  return res.json()
+}
+
+export async function deleteDay(id: string, adminKey: string) {
+  const res = await fetch(`${API_BASE}/admin/days/${id}`, {
+    method: "DELETE",
+    headers: { "x-admin-key": adminKey },
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
 }
 
 export async function deleteTrip(id: string, adminKey: string) {

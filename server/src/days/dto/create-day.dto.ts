@@ -15,4 +15,8 @@ export class CreateDayDto {
   @IsOptional()
   @IsString()
   summary?: string | null;
+
+  @IsOptional()
+  @IsString()
+  coverPhotoUrl?: string | null;
 }

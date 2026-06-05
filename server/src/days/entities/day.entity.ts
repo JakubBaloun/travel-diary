@@ -32,6 +32,9 @@ export class Day {
   @Column({ type: 'text', nullable: true })
   summary: string | null;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  coverPhotoUrl: string | null;
+
   @ManyToOne(() => Trip, (trip) => trip.days, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tripId' })
   trip: Trip;

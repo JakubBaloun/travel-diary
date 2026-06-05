@@ -26,6 +26,20 @@ export class TripsService {
     });
   }
 
+  async findOne(id: string): Promise<Trip> {
+    const trip = await this.tripRepository.findOne({
+      where: { id },
+      relations: { days: true },
+      order: { days: { dayNumber: 'ASC' } },
+    });
+
+    if (!trip) {
+      throw new NotFoundException('Trip not found');
+    }
+
+    return trip;
+  }
+
   async findBySlug(slug: string): Promise<Trip> {
     const trip = await this.tripRepository.findOne({
       where: { slug },

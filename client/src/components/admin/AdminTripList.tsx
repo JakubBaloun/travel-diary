@@ -10,9 +10,10 @@ interface AdminTripListProps {
   onEdit: (trip: TripData) => void
   onDelete: (id: string) => void
   onLogout: () => void
+  onOpenDays: (trip: TripData) => void
 }
 
-function AdminTripList({ trips, loading, error, onCreate, onEdit, onDelete, onLogout }: AdminTripListProps) {
+function AdminTripList({ trips, loading, error, onCreate, onEdit, onDelete, onLogout, onOpenDays }: AdminTripListProps) {
   return (
     <div className="mx-auto max-w-3xl px-6 pt-10">
       <div className="mb-8 flex items-center justify-between">
@@ -46,6 +47,13 @@ function AdminTripList({ trips, loading, error, onCreate, onEdit, onDelete, onLo
                 </p>
               </div>
               <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onOpenDays(t)}
+                >
+                  Dny
+                </Button>
                 <Button
                   variant="secondary"
                   size="sm"

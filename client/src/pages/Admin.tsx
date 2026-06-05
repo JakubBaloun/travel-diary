@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react"
-import { type TripData, fetchTrips, deleteTrip } from "@/lib/api"
+import { type DayData, type TripData, type TripWithDays, fetchTrips, fetchTripById, deleteTrip, deleteDay } from "@/lib/api"
 import AdminLogin from "@/components/admin/AdminLogin"
 import TripForm from "@/components/admin/TripForm"
 import AdminTripList from "@/components/admin/AdminTripList"
+import AdminDayList from "@/components/admin/AdminDayList"
+import DayForm from "@/components/admin/DayForm"
 
 const ADMIN_PASSWORD = "admin"
 
-type View = "list" | "form"
+type View = "list" | "form" | "days" | "dayForm"
 
 function Admin() {
   const [authenticated, setAuthenticated] = useState(
@@ -17,6 +19,12 @@ function Admin() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [editingTrip, setEditingTrip] = useState<TripData | null>(null)
+
+  const [selectedTrip, setSelectedTrip] = useState<TripWithDays | null>(null)
+  const [days, setDays] = useState<DayData[]>([])
+  const [daysLoading, setDaysLoading] = useState(false)
+  const [daysError, setDaysError] = useState("")
+  const [editingDay, setEditingDay] = useState<DayData | null>(null)
 
   useEffect(() => {
     if (!authenticated) return
@@ -52,6 +60,63 @@ function Admin() {
     }
   }
 
+  async function openDays(trip: TripData) {
+    setDaysLoading(true)
+    setDaysError("")
+    try {
+      const data = await fetchTripById(trip.id, ADMIN_PASSWORD)
+      setSelectedTrip(data)
+      setDays(data.days)
+      setView("days")
+    } catch (e) {
+      setDaysError(e instanceof Error ? e.message : "Neznámá chyba")
+    } finally {
+      setDaysLoading(false)
+    }
+  }
+
+  async function reloadDays() {
+    if (!selectedTrip) return
+    setDaysLoading(true)
+    setDaysError("")
+    try {
+      const data = await fetchTripById(selectedTrip.id, ADMIN_PASSWORD)
+      setDays(data.days)
+      setSelectedTrip(data)
+    } catch (e) {
+      setDaysError(e instanceof Error ? e.message : "Neznámá chyba")
+    } finally {
+      setDaysLoading(false)
+    }
+  }
+
+  function openCreateDay() {
+    setEditingDay(null)
+    setView("dayForm")
+  }
+
+  function openEditDay(day: DayData) {
+    setEditingDay(day)
+    setView("dayForm")
+  }
+
+  async function handleDeleteDay(id: string) {
+    if (!confirm("Opravdu chceš smazat tento den?")) return
+
+    try {
+      await deleteDay(id, ADMIN_PASSWORD)
+      await reloadDays()
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Neznámá chyba")
+    }
+  }
+
+  function backToList() {
+    setView("list")
+    setSelectedTrip(null)
+    setDays([])
+  }
+
   if (!authenticated) {
     return <AdminLogin onLogin={() => setAuthenticated(true)} />
   }
@@ -67,6 +132,41 @@ function Admin() {
     )
   }
 
+  if (view === "days" && selectedTrip) {
+    return (
+      <AdminDayList
+        trip={selectedTrip}
+        days={days}
+        loading={daysLoading}
+        error={daysError}
+        onCreate={openCreateDay}
+        onEdit={openEditDay}
+        onDelete={handleDeleteDay}
+        onBack={backToList}
+        adminKey={ADMIN_PASSWORD}
+        onDaysChanged={reloadDays}
+      />
+    )
+  }
+
+  if (view === "dayForm" && selectedTrip) {
+    return (
+      <DayForm
+        tripId={selectedTrip.id}
+        tripStartDate={selectedTrip.startDate}
+        nextDayNumber={
+          selectedTrip.days.length > 0
+            ? Math.max(...selectedTrip.days.map((d) => d.dayNumber)) + 1
+            : 1
+        }
+        editingDay={editingDay}
+        adminKey={ADMIN_PASSWORD}
+        onSaved={async () => { await reloadDays(); setView("days") }}
+        onCancel={() => setView("days")}
+      />
+    )
+  }
+
   return (
     <AdminTripList
       trips={trips}
@@ -76,6 +176,7 @@ function Admin() {
       onEdit={(trip) => { setEditingTrip(trip); setView("form") }}
       onDelete={handleDelete}
       onLogout={() => { localStorage.removeItem("adminAuth"); setAuthenticated(false); setView("list") }}
+      onOpenDays={openDays}
     />
   )
 }
