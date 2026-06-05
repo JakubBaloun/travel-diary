@@ -26,7 +26,7 @@ export class Day {
   @Column({ type: 'date' })
   date: string;
 
-  @Column({ length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   title: string | null;
 
   @Column({ type: 'text', nullable: true })

@@ -22,7 +22,7 @@ export class Trip {
   @Column({ type: 'text', nullable: true })
   description: string | null;
 
-  @Column({ name: 'coverPhotoUrl', length: 500, nullable: true })
+  @Column({ name: 'coverPhotoUrl', type: 'varchar', length: 500, nullable: true })
   coverPhotoUrl: string | null;
 
   @Column({ type: 'date' })

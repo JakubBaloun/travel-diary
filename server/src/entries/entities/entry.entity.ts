@@ -25,10 +25,10 @@ export class Entry {
   @Column({ type: 'text', nullable: true })
   content: string | null;
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   photoUrl: string | null;
 
-  @Column({ length: 500, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   caption: string | null;
 
   @Column({ type: 'int', default: 0 })
