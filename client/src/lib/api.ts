@@ -217,6 +217,80 @@ export async function deleteDay(id: string, adminKey: string) {
   }
 }
 
+export async function createEntry(
+  dayId: string,
+  data: { type: "text"; content: string; caption?: string | null } | { type: "photo"; caption?: string | null },
+  file?: File,
+  adminKey?: string,
+) {
+  if (data.type === "photo" && file) {
+    const formData = new FormData()
+    formData.append("photo", file)
+    formData.append("type", "photo")
+    if (data.caption) formData.append("caption", data.caption)
+    const res = await fetch(`${API_BASE}/admin/days/${dayId}/entries`, {
+      method: "POST",
+      headers: { "x-admin-key": adminKey ?? "" },
+      body: formData,
+    })
+    if (!res.ok) {
+      const text = await res.text()
+      throw new Error(text || `HTTP ${res.status}`)
+    }
+    return res.json()
+  }
+
+  const res = await fetch(`${API_BASE}/admin/days/${dayId}/entries`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-admin-key": adminKey ?? "",
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  return res.json()
+}
+
+export async function updateEntry(
+  id: string,
+  data: { content?: string | null; caption?: string | null; sortOrder?: number },
+  adminKey: string,
+) {
+  const res = await fetch(`${API_BASE}/admin/entries/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "x-admin-key": adminKey,
+    },
+    body: JSON.stringify(data),
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  return res.json()
+}
+
+export async function deleteEntry(id: string, adminKey: string) {
+  const res = await fetch(`${API_BASE}/admin/entries/${id}`, {
+    method: "DELETE",
+    headers: { "x-admin-key": adminKey },
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+}
+
 export async function deleteTrip(id: string, adminKey: string) {
   const res = await fetch(`${API_BASE}/admin/trips/${id}`, {
     method: "DELETE",

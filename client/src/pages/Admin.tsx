@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react"
-import { type DayData, type TripData, type TripWithDays, fetchTrips, fetchTripById, deleteTrip, deleteDay } from "@/lib/api"
+import { type DayData, type EntryData, type TripData, type TripWithDays, fetchTrips, fetchTripById, fetchDayBySlug, deleteTrip, deleteDay } from "@/lib/api"
 import AdminLogin from "@/components/admin/AdminLogin"
 import TripForm from "@/components/admin/TripForm"
 import AdminTripList from "@/components/admin/AdminTripList"
 import AdminDayList from "@/components/admin/AdminDayList"
 import DayForm from "@/components/admin/DayForm"
+import AdminDayEntries from "@/components/admin/AdminDayEntries"
 
 const ADMIN_PASSWORD = "admin"
 
-type View = "list" | "form" | "days" | "dayForm"
+type View = "list" | "form" | "days" | "dayForm" | "dayEntries"
 
 function Admin() {
   const [authenticated, setAuthenticated] = useState(
@@ -25,6 +26,11 @@ function Admin() {
   const [daysLoading, setDaysLoading] = useState(false)
   const [daysError, setDaysError] = useState("")
   const [editingDay, setEditingDay] = useState<DayData | null>(null)
+
+  const [selectedDay, setSelectedDay] = useState<DayData | null>(null)
+  const [entries, setEntries] = useState<EntryData[]>([])
+  const [entriesLoading, setEntriesLoading] = useState(false)
+  const [entriesError, setEntriesError] = useState("")
 
   useEffect(() => {
     if (!authenticated) return
@@ -111,6 +117,43 @@ function Admin() {
     }
   }
 
+  async function openDayEntries(day: DayData) {
+    if (!selectedTrip) return
+    setEntriesLoading(true)
+    setEntriesError("")
+    try {
+      const data = await fetchDayBySlug(selectedTrip.slug, day.dayNumber)
+      setSelectedDay(data)
+      setEntries(data.entries || [])
+      setView("dayEntries")
+    } catch (e) {
+      setEntriesError(e instanceof Error ? e.message : "Neznámá chyba")
+    } finally {
+      setEntriesLoading(false)
+    }
+  }
+
+  async function reloadEntries() {
+    if (!selectedTrip || !selectedDay) return
+    setEntriesLoading(true)
+    setEntriesError("")
+    try {
+      const data = await fetchDayBySlug(selectedTrip.slug, selectedDay.dayNumber)
+      setSelectedDay(data)
+      setEntries(data.entries || [])
+    } catch (e) {
+      setEntriesError(e instanceof Error ? e.message : "Neznámá chyba")
+    } finally {
+      setEntriesLoading(false)
+    }
+  }
+
+  function backToDays() {
+    setView("days")
+    setSelectedDay(null)
+    setEntries([])
+  }
+
   function backToList() {
     setView("list")
     setSelectedTrip(null)
@@ -142,9 +185,23 @@ function Admin() {
         onCreate={openCreateDay}
         onEdit={openEditDay}
         onDelete={handleDeleteDay}
+        onOpenEntries={openDayEntries}
         onBack={backToList}
         adminKey={ADMIN_PASSWORD}
         onDaysChanged={reloadDays}
+      />
+    )
+  }
+
+  if (view === "dayEntries" && selectedDay) {
+    return (
+      <AdminDayEntries
+        day={selectedDay}
+        entries={entries}
+        loading={entriesLoading}
+        adminKey={ADMIN_PASSWORD}
+        onBack={backToDays}
+        onEntriesChanged={reloadEntries}
       />
     )
   }

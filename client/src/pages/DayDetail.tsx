@@ -6,6 +6,7 @@ import { type DayWithEntries, fetchDayBySlug } from "@/lib/api"
 import { formatDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import PhotoGallery from "@/components/PhotoGallery"
 import { ArrowLeft } from "lucide-react"
 
 function DayDetail() {
@@ -73,26 +74,37 @@ function DayDetail() {
           {(!day.entries || day.entries.length === 0) ? (
             <p className="text-center text-zinc-500">Zatím žádné záznamy.</p>
           ) : (
-            <div className="flex flex-col gap-4 pb-10">
-              {day.entries.map((e) => (
-                <Card key={e.id}>
-                  <CardContent className="p-4">
-                    {e.type === "photo" && e.photoUrl && (
-                      <img
-                        src={e.photoUrl}
-                        alt={e.caption || ""}
-                        className="mb-3 w-full rounded-lg object-cover"
-                      />
+            <div className="pb-10">
+              {(() => {
+                const photos = day.entries!.filter((e) => e.type === "photo")
+                const texts = day.entries!.filter((e) => e.type === "text")
+
+                return (
+                  <>
+                    {photos.length > 0 && (
+                      <div className="mb-8">
+                        <PhotoGallery
+                          photos={photos.map((e) => ({ id: e.id, url: e.photoUrl!, caption: e.caption }))}
+                        />
+                      </div>
                     )}
-                    {e.type === "text" && e.content && (
-                      <p className="text-zinc-300">{e.content}</p>
+                    {texts.length > 0 && (
+                      <div className="flex flex-col gap-4">
+                        {texts.map((e) => (
+                          <Card key={e.id}>
+                            <CardContent className="p-4">
+                              {e.content && <p className="text-zinc-300">{e.content}</p>}
+                              {e.caption && (
+                                <p className="mt-2 text-sm text-zinc-500">{e.caption}</p>
+                              )}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
                     )}
-                    {e.caption && (
-                      <p className="mt-2 text-sm text-zinc-500">{e.caption}</p>
-                    )}
-                  </CardContent>
-                </Card>
-              ))}
+                  </>
+                )
+              })()}
             </div>
           )}
         </>

@@ -19,12 +19,13 @@ interface AdminDayListProps {
   onCreate: () => void
   onEdit: (day: DayData) => void
   onDelete: (id: string) => void
+  onOpenEntries: (day: DayData) => void
   onBack: () => void
   adminKey: string
   onDaysChanged: () => void
 }
 
-function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, onBack, adminKey, onDaysChanged }: AdminDayListProps) {
+function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, onOpenEntries, onBack, adminKey, onDaysChanged }: AdminDayListProps) {
   const [showBulk, setShowBulk] = useState(false)
   const [bulkCount, setBulkCount] = useState(3)
   const [bulkStatus, setBulkStatus] = useState<"idle" | "loading" | "error">("idle")
@@ -120,7 +121,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
           <button
             key={d.id}
             className="group block w-full text-left focus-visible:outline-none"
-            onClick={() => onEdit(d)}
+            onClick={() => onOpenEntries(d)}
           >
             <Card className="overflow-hidden transition-all duration-200 group-hover:-translate-y-0.5 group-hover:ring-zinc-400 group-hover:shadow-lg group-hover:shadow-black/20">
               <div className="aspect-[3/1] overflow-hidden">
