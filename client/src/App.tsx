@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom"
 import Login from "@/pages/Login"
-import Vacations from "@/pages/Vacations"
+import Trips from "@/pages/Trips"
 import Admin from "@/pages/Admin"
 import Layout from "@/components/Layout"
 
@@ -9,7 +9,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route element={<Layout />}>
-        <Route path="/trips" element={<Vacations />} />
+        <Route path="/trips" element={<Trips />} />
         <Route path="/admin" element={<Admin />} />
       </Route>
     </Routes>
