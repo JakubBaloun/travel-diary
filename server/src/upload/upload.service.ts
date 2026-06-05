@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
 import sharp from 'sharp';
 
 @Injectable()
@@ -9,14 +13,17 @@ export class UploadService {
 
   constructor() {
     this.s3 = new S3Client({
-      endpoint: process.env.R2_ENDPOINT!,
-      region: 'auto',
+      endpoint: process.env.B2_ENDPOINT!,
+      region: process.env.B2_REGION!,
       credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!,
+        accessKeyId: process.env.B2_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.B2_SECRET_ACCESS_KEY!,
       },
+      forcePathStyle: true,
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
     });
-    this.bucket = process.env.R2_BUCKET_NAME!;
+    this.bucket = process.env.B2_BUCKET_NAME!;
   }
 
   async uploadPhoto(file: Express.Multer.File): Promise<string> {
@@ -33,14 +40,15 @@ export class UploadService {
         Key: key,
         Body: resized,
         ContentType: 'image/jpeg',
+        ContentLength: resized.length,
       }),
     );
 
-    return `${process.env.R2_PUBLIC_URL}/${key}`;
+    return `${process.env.B2_PUBLIC_URL}/${key}`;
   }
 
   async deletePhoto(url: string): Promise<void> {
-    const key = url.replace(`${process.env.R2_PUBLIC_URL}/`, '');
+    const key = url.replace(`${process.env.B2_PUBLIC_URL}/`, '');
 
     await this.s3.send(
       new DeleteObjectCommand({
