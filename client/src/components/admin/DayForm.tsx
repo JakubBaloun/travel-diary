@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { type DayData, createDay, updateDay } from "@/lib/api"
+import { formatDate } from "@/lib/utils"
 
 function addDays(dateStr: string, days: number): string {
   const date = new Date(dateStr)
@@ -98,7 +99,7 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
               />
               {!editingId && (
                 <p className="text-xs text-zinc-500">
-                  Datum se dopočítá automaticky: {date}
+                  Datum se dopočítá automaticky: {formatDate(date)}
                 </p>
               )}
             </div>

@@ -1,70 +1,72 @@
-import { useEffect, useRef, useState } from "react"
-import { createPortal } from "react-dom"
-import { format } from "date-fns"
-import { CalendarDays, X } from "lucide-react"
-import { DayPicker } from "react-day-picker"
-import { Button } from "@/components/ui/button"
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { format } from "date-fns";
+import { CalendarDays, X } from "lucide-react";
+import { DayPicker } from "react-day-picker";
+import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils";
 
 interface DateRangePickerProps {
-  value: { from: string; to: string }
-  onChange: (range: { from: string; to: string }) => void
+  value: { from: string; to: string };
+  onChange: (range: { from: string; to: string }) => void;
 }
 
 function DateRangePicker({ value, onChange }: DateRangePickerProps) {
-  const [open, setOpen] = useState(false)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-  const portalRef = useRef<HTMLDivElement>(null)
-  const [position, setPosition] = useState({ top: 0, left: 0 })
-  const [wide, setWide] = useState(window.innerWidth >= 640)
+  const [open, setOpen] = useState(false);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState({ top: 0, left: 0 });
+  const [wide, setWide] = useState(window.innerWidth >= 640);
 
   const selected = value.from
     ? {
         from: new Date(value.from + "T00:00:00"),
         to: value.to ? new Date(value.to + "T00:00:00") : undefined,
       }
-    : undefined
+    : undefined;
 
   useEffect(() => {
-    function handleResize() { setWide(window.innerWidth >= 640) }
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
-
-  useEffect(() => {
-    if (!open) return
-    function handleClick(e: MouseEvent) {
-      const target = e.target as Node | null
-      if (!target) return
-      if (portalRef.current?.contains(target)) return
-      if (buttonRef.current?.contains(target)) return
-      setOpen(false)
+    function handleResize() {
+      setWide(window.innerWidth >= 640);
     }
-    document.addEventListener("mousedown", handleClick)
-    return () => document.removeEventListener("mousedown", handleClick)
-  }, [open])
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    function handleClick(e: MouseEvent) {
+      const target = e.target as Node | null;
+      if (!target) return;
+      if (portalRef.current?.contains(target)) return;
+      if (buttonRef.current?.contains(target)) return;
+      setOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
 
   function handleButtonClick() {
     if (open) {
-      setOpen(false)
+      setOpen(false);
     } else {
       if (buttonRef.current) {
-        const rect = buttonRef.current.getBoundingClientRect()
-        const calendarH = wide ? 340 : 380
-        const spaceBelow = window.innerHeight - rect.bottom
-        const top = spaceBelow >= calendarH
-          ? rect.bottom + 8
-          : rect.top - calendarH - 8
-        setPosition({ top, left: rect.left })
+        const rect = buttonRef.current.getBoundingClientRect();
+        const calendarH = wide ? 340 : 380;
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const top =
+          spaceBelow >= calendarH ? rect.bottom + 8 : rect.top - calendarH - 8;
+        setPosition({ top, left: rect.left });
       }
-      setOpen(true)
+      setOpen(true);
     }
   }
 
   function clearRange() {
-    onChange({ from: "", to: "" })
+    onChange({ from: "", to: "" });
   }
 
-  const hasRange = value.from && value.to
+  const hasRange = value.from && value.to;
 
   return (
     <div className="flex flex-col gap-1.5">
@@ -80,7 +82,7 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
           <CalendarDays className="mr-2 size-4 shrink-0" />
           <span className="flex-1 truncate">
             {hasRange
-              ? `${value.from} – ${value.to}`
+              ? `${formatDate(value.from)} – ${formatDate(value.to)}`
               : "Vyberte rozsah dat"}
           </span>
           {hasRange && (
@@ -88,13 +90,13 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
               role="button"
               tabIndex={0}
               onClick={(e) => {
-                e.stopPropagation()
-                clearRange()
+                e.stopPropagation();
+                clearRange();
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
-                  e.stopPropagation()
-                  clearRange()
+                  e.stopPropagation();
+                  clearRange();
                 }
               }}
               className="-mr-1 ml-1 flex size-5 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-700 hover:text-zinc-300"
@@ -112,23 +114,24 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
             >
               <DayPicker
                 mode="range"
+                min={1}
                 selected={selected}
                 onSelect={(range) => {
                   if (!range) {
-                    onChange({ from: "", to: "" })
-                    return
+                    onChange({ from: "", to: "" });
+                    return;
                   }
-                  const fromStr = range.from ? format(range.from, "yyyy-MM-dd") : ""
-                  const toStr = range.to ? format(range.to, "yyyy-MM-dd") : ""
-                  onChange({ from: fromStr, to: toStr })
-                  if (fromStr && toStr && fromStr !== toStr) setOpen(false)
+                  const fromStr = range.from
+                    ? format(range.from, "yyyy-MM-dd")
+                    : "";
+                  const toStr = range.to ? format(range.to, "yyyy-MM-dd") : "";
+                  onChange({ from: fromStr, to: toStr });
+                  if (fromStr && toStr) setOpen(false);
                 }}
                 classNames={{
                   month: "space-y-4",
-                  caption: "flex justify-center pt-1 relative items-center",
                   caption_label: "text-sm font-medium text-zinc-100",
                   nav: "space-x-1 flex items-center",
-                  nav_button: "size-7 bg-transparent p-0 opacity-50 hover:opacity-100 text-zinc-300",
                   button_next: "absolute right-1 top-1",
                   button_previous: "absolute left-1 top-1",
                   months: "flex gap-4",
@@ -153,7 +156,7 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
           )}
       </div>
     </div>
-  )
+  );
 }
 
-export default DateRangePicker
+export default DateRangePicker;

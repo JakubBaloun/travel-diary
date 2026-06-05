@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { isAuthenticated } from "@/lib/auth";
 import { Navigate } from "react-router-dom";
-import { type TripWithDays, fetchTripBySlug } from "@/lib/api";
+import { type TripWithDays, fetchTripBySlug } from "@/lib/api"
+import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
@@ -47,7 +48,7 @@ function TripDetail() {
               {trip.title}
             </h1>
             <p className="mt-1 text-sm text-zinc-500">
-              {trip.startDate} – {trip.endDate}
+              {formatDate(trip.startDate)} – {formatDate(trip.endDate)}
             </p>
             {trip.description && (
               <p className="mt-4 text-zinc-300">{trip.description}</p>
@@ -87,7 +88,7 @@ function TripDetail() {
                           <h3 className="truncate font-semibold text-slate-800">
                             {d.title || `Den ${d.dayNumber}`}
                           </h3>
-                          <p className="text-xs text-zinc-500">{d.date}</p>
+                          <p className="text-xs text-zinc-500">{formatDate(d.date)}</p>
                         </div>
                       </div>
                       {d.summary && (

@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom"
 import { isAuthenticated } from "@/lib/auth"
 import { Navigate } from "react-router-dom"
 import { type DayWithEntries, fetchDayBySlug } from "@/lib/api"
+import { formatDate } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft } from "lucide-react"
@@ -61,7 +62,7 @@ function DayDetail() {
                 <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
                   {day.title || `Den ${day.dayNumber}`}
                 </h1>
-                <p className="text-sm text-zinc-500">{day.date}</p>
+                <p className="text-sm text-zinc-500">{formatDate(day.date)}</p>
               </div>
             </div>
             {day.summary && (

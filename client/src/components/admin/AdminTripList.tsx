@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { type TripData } from "@/lib/api"
+import { formatDate } from "@/lib/utils"
 
 interface AdminTripListProps {
   trips: TripData[]
@@ -43,7 +44,7 @@ function AdminTripList({ trips, loading, error, onCreate, onEdit, onDelete, onLo
               <div>
                 <h3 className="font-semibold text-slate-800">{t.title}</h3>
                 <p className="text-sm text-zinc-500">
-                  {t.startDate} – {t.endDate}
+                  {formatDate(t.startDate)} – {formatDate(t.endDate)}
                 </p>
               </div>
               <div className="flex gap-2">

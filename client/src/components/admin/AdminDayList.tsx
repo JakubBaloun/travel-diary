@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { type DayData, type TripWithDays, createDay } from "@/lib/api"
+import { formatDate } from "@/lib/utils"
 
 function addDays(dateStr: string, days: number): string {
   const date = new Date(dateStr)
@@ -60,7 +61,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
             {trip.title}
           </h1>
           <p className="text-sm text-zinc-500">
-            {trip.startDate} – {trip.endDate}
+            {formatDate(trip.startDate)} – {formatDate(trip.endDate)}
           </p>
         </div>
         <div className="flex gap-2">
@@ -90,7 +91,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
             </div>
             <div className="text-xs text-zinc-500">
               <p>Od dne {nextDayNumber}</p>
-              <p>Od {addDays(trip.startDate, nextDayNumber - 1)}</p>
+              <p>Od {formatDate(addDays(trip.startDate, nextDayNumber - 1))}</p>
             </div>
             <Button
               onClick={handleBulkCreate}
@@ -135,7 +136,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
                     {d.dayNumber}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-xs text-zinc-500">{d.date}</p>
+                    <p className="text-xs text-zinc-500">{formatDate(d.date)}</p>
                     <h3 className="truncate font-semibold text-slate-800">
                       {d.title || `Den ${d.dayNumber}`}
                     </h3>
