@@ -16,7 +16,7 @@ function Login() {
 
     if (checkPassword(password)) {
       login()
-      navigate("/vacations")
+      navigate("/trips")
     } else {
       setError(true)
     }
