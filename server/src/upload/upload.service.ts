@@ -28,6 +28,7 @@ export class UploadService {
 
   async uploadPhoto(file: Express.Multer.File): Promise<string> {
     const resized = await sharp(file.buffer)
+      .rotate()
       .resize({ width: 1800, withoutEnlargement: true })
       .jpeg({ quality: 80 })
       .toBuffer();

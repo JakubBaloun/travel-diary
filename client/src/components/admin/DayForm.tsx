@@ -1,9 +1,10 @@
-import { type FormEvent, useState } from "react"
+import { type FormEvent, useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { type DayData, createDay, updateDay } from "@/lib/api"
+import { type DayData, createDay, updateDay, uploadPhoto } from "@/lib/api"
 import { formatDate } from "@/lib/utils"
+import { ImagePlus, Replace, Trash2 } from "lucide-react"
 
 function addDays(dateStr: string, days: number): string {
   const date = new Date(dateStr)
@@ -28,8 +29,23 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
   const [title, setTitle] = useState(editingDay?.title ?? "")
   const [summary, setSummary] = useState(editingDay?.summary ?? "")
   const [coverPhotoUrl, setCoverPhotoUrl] = useState(editingDay?.coverPhotoUrl ?? "")
+  const [coverFile, setCoverFile] = useState<File | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string>("")
   const [status, setStatus] = useState<"idle" | "loading" | "error">("idle")
   const [message, setMessage] = useState("")
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (!coverFile) {
+      setPreviewUrl("")
+      return
+    }
+    const url = URL.createObjectURL(coverFile)
+    setPreviewUrl(url)
+    return () => URL.revokeObjectURL(url)
+  }, [coverFile])
+
+  const displayPhoto = previewUrl || coverPhotoUrl
 
   function handleDayNumberChange(value: number) {
     setDayNumber(value)
@@ -38,18 +54,34 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
     }
   }
 
+  function handleFilePick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) setCoverFile(file)
+    e.target.value = ""
+  }
+
+  function handleRemovePhoto() {
+    setCoverFile(null)
+    setCoverPhotoUrl("")
+  }
+
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setStatus("loading")
     setMessage("")
 
     try {
+      let finalPhotoUrl: string | null = coverPhotoUrl || null
+      if (coverFile) {
+        finalPhotoUrl = await uploadPhoto(coverFile, adminKey)
+      }
+
       const data = {
         dayNumber,
         date,
         title: title || null,
         summary: summary || null,
-        coverPhotoUrl: coverPhotoUrl || null,
+        coverPhotoUrl: finalPhotoUrl,
       }
 
       if (editingId) {
@@ -142,16 +174,62 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="coverPhotoUrl" className="text-sm text-muted-foreground">
-                URL titulní fotky
-              </label>
-              <Input
-                id="coverPhotoUrl"
-                type="url"
-                value={coverPhotoUrl}
-                onChange={(e) => setCoverPhotoUrl(e.target.value)}
-                placeholder="https://"
+              <span className="text-sm text-muted-foreground">
+                Titulní fotka
+              </span>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFilePick}
               />
+
+              {displayPhoto ? (
+                <div className="overflow-hidden rounded-lg border border-input">
+                  <div className="aspect-[3/2] overflow-hidden bg-muted">
+                    <img
+                      src={displayPhoto}
+                      alt="Náhled titulní fotky"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between gap-2 border-t border-input bg-muted/40 px-3 py-2">
+                    <span className="truncate text-xs text-muted-foreground">
+                      {coverFile ? coverFile.name : "Současná fotka"}
+                    </span>
+                    <div className="flex gap-1">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <Replace />
+                        Změnit
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleRemovePhoto}
+                      >
+                        <Trash2 />
+                        Odstranit
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex aspect-[3/2] w-full flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-input bg-transparent text-muted-foreground transition-colors hover:border-ring hover:bg-muted/40 hover:text-foreground focus-visible:border-ring focus-visible:outline-none"
+                >
+                  <ImagePlus className="size-6" />
+                  <span className="text-sm">Vybrat fotku z počítače</span>
+                </button>
+              )}
             </div>
 
             {status === "error" && message && (
@@ -165,7 +243,9 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
                 className="flex-1"
               >
                 {status === "loading"
-                  ? "Ukládám..."
+                  ? coverFile
+                    ? "Nahrávám fotku..."
+                    : "Ukládám..."
                   : editingId
                     ? "Uložit změny"
                     : "Vytvořit den"}

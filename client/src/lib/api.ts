@@ -79,6 +79,25 @@ export async function fetchTrips(): Promise<TripData[]> {
   return res.json()
 }
 
+export async function uploadPhoto(file: File, adminKey: string): Promise<string> {
+  const formData = new FormData()
+  formData.append("photo", file)
+
+  const res = await fetch(`${API_BASE}/admin/upload`, {
+    method: "POST",
+    headers: { "x-admin-key": adminKey },
+    body: formData,
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(text || `HTTP ${res.status}`)
+  }
+
+  const data = (await res.json()) as { url: string }
+  return data.url
+}
+
 export async function createTrip(
   data: {
     title: string
