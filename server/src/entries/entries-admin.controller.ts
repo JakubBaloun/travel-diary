@@ -14,12 +14,13 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { EntriesService } from './entries.service';
 import { CreateEntryDto } from './dto/create-entry.dto';
 import { UpdateEntryDto } from './dto/update-entry.dto';
-import { AdminKeyGuard } from '../common/guards/admin-key.guard';
+import { AdminAuthGuard } from '../common/guards/admin-auth.guard';
 import { EntryType } from '../common/enums/entry-type.enum';
 import { UploadService } from '../upload/upload.service';
+import { photoUploadOptions } from '../upload/multer.config';
 
 @Controller('admin')
-@UseGuards(AdminKeyGuard)
+@UseGuards(AdminAuthGuard)
 export class EntriesAdminController {
   constructor(
     private readonly entriesService: EntriesService,
@@ -27,7 +28,7 @@ export class EntriesAdminController {
   ) {}
 
   @Post('days/:dayId/entries')
-  @UseInterceptors(FileInterceptor('photo'))
+  @UseInterceptors(FileInterceptor('photo', photoUploadOptions))
   async create(
     @Param('dayId') dayId: string,
     @Body() dto: CreateEntryDto,

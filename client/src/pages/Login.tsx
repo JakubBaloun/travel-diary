@@ -4,22 +4,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { Ghost } from "lucide-react";
-import { checkPassword, login } from "@/lib/auth";
+import { login } from "@/lib/auth";
 
 function Login() {
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const password = data.get("password") as string;
 
-    if (checkPassword(password)) {
-      login();
+    setSubmitting(true);
+    setError("");
+    try {
+      await login(password);
       navigate("/trips");
-    } else {
-      setError(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Chyba přihlášení");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -44,18 +49,20 @@ function Login() {
             Zadej heslo pro přístup
           </p>
         </div>
-        <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3" autoComplete="off">
           <Input
             name="password"
             type="password"
+            autoComplete="new-password"
             className="text-center"
-            onChange={() => setError(false)}
+            onChange={() => setError("")}
+            disabled={submitting}
           />
           {error && (
-            <p className="text-center text-xs text-destructive">Špatné heslo</p>
+            <p className="text-center text-xs text-destructive">{error}</p>
           )}
-          <Button type="submit" className="w-full">
-            Vstoupit
+          <Button type="submit" className="w-full" disabled={submitting}>
+            {submitting ? "Přihlašuji..." : "Vstoupit"}
           </Button>
         </form>
       </div>

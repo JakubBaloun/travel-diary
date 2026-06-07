@@ -1,9 +1,9 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { TripsService } from './trips.service';
-import { AccessKeyGuard } from '../common/guards/access-key.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('trips')
-@UseGuards(AccessKeyGuard)
+@UseGuards(JwtAuthGuard)
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 

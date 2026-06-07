@@ -2,10 +2,10 @@ import { Controller, Get, Post, Patch, Delete, Body, Param, UseGuards } from '@n
 import { TripsService } from './trips.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
-import { AdminKeyGuard } from '../common/guards/admin-key.guard';
+import { AdminAuthGuard } from '../common/guards/admin-auth.guard';
 
 @Controller('admin/trips')
-@UseGuards(AdminKeyGuard)
+@UseGuards(AdminAuthGuard)
 export class TripsAdminController {
   constructor(private readonly tripsService: TripsService) {}
 

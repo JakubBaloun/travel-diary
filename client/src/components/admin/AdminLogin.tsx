@@ -2,27 +2,30 @@ import { type FormEvent, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const ADMIN_PASSWORD = "admin";
+import { loginAdmin } from "@/lib/auth";
 
 interface AdminLoginProps {
   onLogin: () => void;
 }
 
 function AdminLogin({ onLogin }: AdminLoginProps) {
-  const [loginError, setLoginError] = useState(false);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleLogin(e: FormEvent<HTMLFormElement>) {
+  async function handleLogin(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const password = data.get("password") as string;
 
-    if (password === ADMIN_PASSWORD) {
-      localStorage.setItem("adminAuth", "true");
-      setLoginError(false);
+    setSubmitting(true);
+    setError("");
+    try {
+      await loginAdmin(password);
       onLogin();
-    } else {
-      setLoginError(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Chyba přihlášení");
+    } finally {
+      setSubmitting(false);
     }
   }
 
@@ -33,19 +36,19 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
           <CardTitle>Admin přístup</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="flex flex-col gap-3">
+          <form onSubmit={handleLogin} className="flex flex-col gap-3" autoComplete="off">
             <Input
               name="password"
               type="password"
-              onChange={() => setLoginError(false)}
+              autoComplete="new-password"
+              onChange={() => setError("")}
+              disabled={submitting}
             />
-            {loginError && (
-              <p className="text-center text-xs text-destructive">
-                Špatné heslo
-              </p>
+            {error && (
+              <p className="text-center text-xs text-destructive">{error}</p>
             )}
-            <Button type="submit" className="w-full">
-              Vstoupit
+            <Button type="submit" className="w-full" disabled={submitting}>
+              {submitting ? "Přihlašuji..." : "Vstoupit"}
             </Button>
           </form>
         </CardContent>

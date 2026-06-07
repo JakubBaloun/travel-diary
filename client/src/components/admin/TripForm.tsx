@@ -17,12 +17,11 @@ function generateSlug(title: string): string {
 
 interface TripFormProps {
   editingTrip: TripData | null
-  adminKey: string
   onSaved: () => void
   onCancel: () => void
 }
 
-function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
+function TripForm({ editingTrip, onSaved, onCancel }: TripFormProps) {
   const [editingId] = useState<string | null>(editingTrip?.id ?? null)
   const [title, setTitle] = useState(editingTrip?.title ?? "")
   const [slug, setSlug] = useState(editingTrip?.slug ?? "")
@@ -74,7 +73,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
     try {
       let finalPhotoUrl: string | null = coverPhotoUrl || null
       if (coverFile) {
-        finalPhotoUrl = await uploadPhoto(coverFile, adminKey)
+        finalPhotoUrl = await uploadPhoto(coverFile)
       }
 
       const data = {
@@ -87,9 +86,9 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
       }
 
       if (editingId) {
-        await updateTrip(editingId, data, adminKey)
+        await updateTrip(editingId, data)
       } else {
-        await createTrip(data, adminKey)
+        await createTrip(data)
       }
 
       setStatus("idle")

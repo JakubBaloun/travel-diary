@@ -2,10 +2,10 @@ import { Controller, Post, Patch, Delete, Body, Param, UseGuards } from '@nestjs
 import { DaysService } from './days.service';
 import { CreateDayDto } from './dto/create-day.dto';
 import { UpdateDayDto } from './dto/update-day.dto';
-import { AdminKeyGuard } from '../common/guards/admin-key.guard';
+import { AdminAuthGuard } from '../common/guards/admin-auth.guard';
 
 @Controller('admin')
-@UseGuards(AdminKeyGuard)
+@UseGuards(AdminAuthGuard)
 export class DaysAdminController {
   constructor(private readonly daysService: DaysService) {}
 

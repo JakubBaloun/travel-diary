@@ -17,12 +17,11 @@ interface DayFormProps {
   tripStartDate: string
   nextDayNumber: number
   editingDay: DayData | null
-  adminKey: string
   onSaved: () => void
   onCancel: () => void
 }
 
-function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, onSaved, onCancel }: DayFormProps) {
+function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, onSaved, onCancel }: DayFormProps) {
   const [editingId] = useState<string | null>(editingDay?.id ?? null)
   const [dayNumber, setDayNumber] = useState(editingDay?.dayNumber ?? nextDayNumber)
   const [date, setDate] = useState(editingDay?.date ?? addDays(tripStartDate, nextDayNumber - 1))
@@ -73,7 +72,7 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
     try {
       let finalPhotoUrl: string | null = coverPhotoUrl || null
       if (coverFile) {
-        finalPhotoUrl = await uploadPhoto(coverFile, adminKey)
+        finalPhotoUrl = await uploadPhoto(coverFile)
       }
 
       const data = {
@@ -85,9 +84,9 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
       }
 
       if (editingId) {
-        await updateDay(editingId, data, adminKey)
+        await updateDay(editingId, data)
       } else {
-        await createDay(tripId, data, adminKey)
+        await createDay(tripId, data)
       }
 
       setStatus("idle")

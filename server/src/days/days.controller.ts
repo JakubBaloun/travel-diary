@@ -1,10 +1,10 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { DaysService } from './days.service';
 import { TripsService } from '../trips/trips.service';
-import { AccessKeyGuard } from '../common/guards/access-key.guard';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard';
 
 @Controller('trips/:slug/days')
-@UseGuards(AccessKeyGuard)
+@UseGuards(JwtAuthGuard)
 export class DaysController {
   constructor(
     private readonly daysService: DaysService,

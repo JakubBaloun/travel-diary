@@ -5,9 +5,10 @@ import { DaysService } from './days.service';
 import { DaysAdminController } from './days-admin.controller';
 import { DaysController } from './days.controller';
 import { TripsModule } from '../trips/trips.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Day]), TripsModule],
+  imports: [TypeOrmModule.forFeature([Day]), TripsModule, AuthModule],
   controllers: [DaysAdminController, DaysController],
   providers: [DaysService],
   exports: [DaysService],

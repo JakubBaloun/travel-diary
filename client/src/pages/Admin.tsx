@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { type DayData, type EntryData, type TripData, type TripWithDays, fetchTrips, fetchTripById, fetchDayBySlug, deleteTrip, deleteDay } from "@/lib/api"
+import { isAdminAuthenticated, logoutAdmin } from "@/lib/auth"
 import AdminLogin from "@/components/admin/AdminLogin"
 import TripForm from "@/components/admin/TripForm"
 import AdminTripList from "@/components/admin/AdminTripList"
@@ -7,14 +8,10 @@ import AdminDayList from "@/components/admin/AdminDayList"
 import DayForm from "@/components/admin/DayForm"
 import AdminDayEntries from "@/components/admin/AdminDayEntries"
 
-const ADMIN_PASSWORD = "admin"
-
 type View = "list" | "form" | "days" | "dayForm" | "dayEntries"
 
 function Admin() {
-  const [authenticated, setAuthenticated] = useState(
-    () => localStorage.getItem("adminAuth") === "true",
-  )
+  const [authenticated, setAuthenticated] = useState(isAdminAuthenticated)
   const [view, setView] = useState<View>("list")
   const [trips, setTrips] = useState<TripData[]>([])
   const [loading, setLoading] = useState(true)
@@ -58,7 +55,7 @@ function Admin() {
     if (!confirm("Opravdu chceš smazat tento trip?")) return
 
     try {
-      await deleteTrip(id, ADMIN_PASSWORD)
+      await deleteTrip(id)
       await loadTrips()
     } catch (err) {
       alert(err instanceof Error ? err.message : "Neznámá chyba")
@@ -69,7 +66,7 @@ function Admin() {
     setDaysLoading(true)
     setDaysError("")
     try {
-      const data = await fetchTripById(trip.id, ADMIN_PASSWORD)
+      const data = await fetchTripById(trip.id)
       setSelectedTrip(data)
       setDays(data.days)
       setView("days")
@@ -85,7 +82,7 @@ function Admin() {
     setDaysLoading(true)
     setDaysError("")
     try {
-      const data = await fetchTripById(selectedTrip.id, ADMIN_PASSWORD)
+      const data = await fetchTripById(selectedTrip.id)
       setDays(data.days)
       setSelectedTrip(data)
     } catch (e) {
@@ -109,7 +106,7 @@ function Admin() {
     if (!confirm("Opravdu chceš smazat tento den?")) return
 
     try {
-      await deleteDay(id, ADMIN_PASSWORD)
+      await deleteDay(id)
       await reloadDays()
     } catch (err) {
       alert(err instanceof Error ? err.message : "Neznámá chyba")
@@ -165,7 +162,6 @@ function Admin() {
     return (
       <TripForm
         editingTrip={editingTrip}
-        adminKey={ADMIN_PASSWORD}
         onSaved={async () => { await loadTrips(); setView("list") }}
         onCancel={() => setView("list")}
       />
@@ -184,7 +180,6 @@ function Admin() {
         onDelete={handleDeleteDay}
         onOpenEntries={openDayEntries}
         onBack={backToList}
-        adminKey={ADMIN_PASSWORD}
         onDaysChanged={reloadDays}
       />
     )
@@ -196,7 +191,6 @@ function Admin() {
         day={selectedDay}
         entries={entries}
         loading={entriesLoading}
-        adminKey={ADMIN_PASSWORD}
         onBack={backToDays}
         onEntriesChanged={reloadEntries}
       />
@@ -214,7 +208,6 @@ function Admin() {
             : 1
         }
         editingDay={editingDay}
-        adminKey={ADMIN_PASSWORD}
         onSaved={async () => { await reloadDays(); setView("days") }}
         onCancel={() => setView("days")}
       />
@@ -229,7 +222,7 @@ function Admin() {
       onCreate={openCreate}
       onEdit={(trip) => { setEditingTrip(trip); setView("form") }}
       onDelete={handleDelete}
-      onLogout={() => { localStorage.removeItem("adminAuth"); setAuthenticated(false); setView("list") }}
+      onLogout={() => { logoutAdmin(); setAuthenticated(false); setView("list") }}
       onOpenDays={openDays}
     />
   )

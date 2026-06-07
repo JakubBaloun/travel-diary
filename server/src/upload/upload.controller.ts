@@ -8,15 +8,16 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
-import { AdminKeyGuard } from '../common/guards/admin-key.guard';
+import { AdminAuthGuard } from '../common/guards/admin-auth.guard';
+import { photoUploadOptions } from './multer.config';
 
 @Controller('admin/upload')
-@UseGuards(AdminKeyGuard)
+@UseGuards(AdminAuthGuard)
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @Post()
-  @UseInterceptors(FileInterceptor('photo'))
+  @UseInterceptors(FileInterceptor('photo', photoUploadOptions))
   async upload(@UploadedFile() file?: Express.Multer.File) {
     if (!file) {
       throw new BadRequestException('Photo file is required');

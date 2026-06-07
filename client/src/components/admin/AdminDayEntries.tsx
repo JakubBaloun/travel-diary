@@ -11,12 +11,11 @@ interface AdminDayEntriesProps {
   day: DayData
   entries: EntryData[]
   loading: boolean
-  adminKey: string
   onBack: () => void
   onEntriesChanged: () => void
 }
 
-function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesChanged }: AdminDayEntriesProps) {
+function AdminDayEntries({ day, entries, loading, onBack, onEntriesChanged }: AdminDayEntriesProps) {
   const fileRef = useRef<HTMLInputElement>(null)
   const [entryType, setEntryType] = useState<"text" | "photo">("text")
   const [content, setContent] = useState("")
@@ -46,7 +45,7 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
           setMessage("Text nesmí být prázdný")
           return
         }
-        await createEntry(day.id, { type: "text", content: content.trim(), caption: caption || null }, undefined, adminKey)
+        await createEntry(day.id, { type: "text", content: content.trim(), caption: caption || null })
       } else {
         if (photoFiles.length === 0) {
           setStatus("error")
@@ -55,7 +54,7 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
         }
         await Promise.all(
           photoFiles.map((f) =>
-            createEntry(day.id, { type: "photo", caption: caption || null }, f, adminKey)
+            createEntry(day.id, { type: "photo", caption: caption || null }, f)
           )
         )
       }
@@ -74,7 +73,7 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
   async function handleDelete(id: string) {
     if (!confirm("Opravdu chceš smazat tento záznam?")) return
     try {
-      await deleteEntry(id, adminKey)
+      await deleteEntry(id)
       onEntriesChanged()
     } catch (err) {
       alert(err instanceof Error ? err.message : "Neznámá chyba")

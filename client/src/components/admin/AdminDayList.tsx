@@ -21,11 +21,10 @@ interface AdminDayListProps {
   onDelete: (id: string) => void
   onOpenEntries: (day: DayData) => void
   onBack: () => void
-  adminKey: string
   onDaysChanged: () => void
 }
 
-function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, onOpenEntries, onBack, adminKey, onDaysChanged }: AdminDayListProps) {
+function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, onOpenEntries, onBack, onDaysChanged }: AdminDayListProps) {
   const [showBulk, setShowBulk] = useState(false)
   const [bulkCount, setBulkCount] = useState(3)
   const [bulkStatus, setBulkStatus] = useState<"idle" | "loading" | "error">("idle")
@@ -43,7 +42,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
         await createDay(trip.id, {
           dayNumber: dayNum,
           date: addDays(trip.startDate, dayNum - 1),
-        }, adminKey)
+        })
       }
       setBulkStatus("idle")
       setShowBulk(false)
