@@ -70,7 +70,7 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="text-sm text-zinc-400">Datum *</label>
+      <label className="text-sm text-muted-foreground">Datum *</label>
       <div className="relative">
         <Button
           ref={buttonRef}
@@ -99,7 +99,7 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
                   clearRange();
                 }
               }}
-              className="-mr-1 ml-1 flex size-5 items-center justify-center rounded-md text-zinc-500 hover:bg-zinc-700 hover:text-zinc-300"
+              className="-mr-1 ml-1 flex size-5 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-accent-foreground"
             >
               <X className="size-3.5" />
             </span>
@@ -109,7 +109,7 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
           createPortal(
             <div
               ref={portalRef}
-              className="fixed z-50 rounded-xl border border-zinc-700 bg-zinc-900 p-3 shadow-xl"
+              className="fixed z-50 rounded-xl border border-surface-border bg-popover p-3 text-popover-foreground shadow-xl"
               style={{ top: position.top, left: Math.max(8, position.left) }}
             >
               <DayPicker
@@ -130,25 +130,25 @@ function DateRangePicker({ value, onChange }: DateRangePickerProps) {
                 }}
                 classNames={{
                   month: "space-y-4",
-                  caption_label: "text-sm font-medium text-zinc-100",
+                  caption_label: "text-sm font-medium text-foreground",
                   nav: "space-x-1 flex items-center",
                   button_next: "absolute right-1 top-1",
                   button_previous: "absolute left-1 top-1",
                   months: "flex gap-4",
                   month_grid: "w-full border-collapse",
                   weekdays: "flex",
-                  weekday: "w-9 text-center text-xs text-zinc-400",
+                  weekday: "w-9 text-center text-xs text-muted-foreground",
                   week: "flex w-full",
-                  day: "size-9 p-0 font-normal text-sm text-zinc-300 hover:bg-zinc-700 rounded-md focus:outline-none",
+                  day: "size-9 p-0 font-normal text-sm text-foreground hover:bg-accent hover:text-accent-foreground rounded-md focus:outline-none",
                   day_button:
-                    "size-9 font-normal text-sm aria-selected:opacity-100 hover:bg-zinc-700 rounded-md focus:outline-none",
-                  selected: "bg-zinc-600 text-white hover:bg-zinc-500",
-                  range_start: "rounded-l-md bg-zinc-600 text-white",
-                  range_end: "rounded-r-md bg-zinc-600 text-white",
-                  range_middle: "bg-zinc-800 text-zinc-200",
-                  today: "border border-zinc-500",
-                  outside: "text-zinc-600",
-                  disabled: "text-zinc-700 opacity-50 cursor-not-allowed",
+                    "size-9 font-normal text-sm aria-selected:opacity-100 hover:bg-accent hover:text-accent-foreground rounded-md focus:outline-none",
+                  selected: "bg-primary text-primary-foreground hover:bg-primary/90",
+                  range_start: "rounded-l-md bg-primary text-primary-foreground",
+                  range_end: "rounded-r-md bg-primary text-primary-foreground",
+                  range_middle: "bg-accent text-accent-foreground",
+                  today: "border border-ring",
+                  outside: "text-muted-foreground/60",
+                  disabled: "text-muted-foreground/40 opacity-50 cursor-not-allowed",
                 }}
               />
             </div>,

@@ -71,7 +71,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
   return (
     <div className="mx-auto max-w-lg px-6 pt-10">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {editingId ? "Upravit trip" : "Nový trip"}
         </h1>
         <Button variant="ghost" size="sm" onClick={onCancel}>
@@ -88,7 +88,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="title" className="text-sm text-zinc-400">
+              <label htmlFor="title" className="text-sm text-muted-foreground">
                 Název *
               </label>
               <Input
@@ -100,7 +100,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="slug" className="text-sm text-zinc-400">
+              <label htmlFor="slug" className="text-sm text-muted-foreground">
                 Slug *
               </label>
               <Input
@@ -113,7 +113,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="description" className="text-sm text-zinc-400">
+              <label htmlFor="description" className="text-sm text-muted-foreground">
                 Popis
               </label>
               <textarea
@@ -121,7 +121,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="flex w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+                className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none dark:bg-input/30"
               />
             </div>
 
@@ -136,7 +136,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
             <div className="flex flex-col gap-1.5">
               <label
                 htmlFor="coverPhotoUrl"
-                className="text-sm text-zinc-400"
+                className="text-sm text-muted-foreground"
               >
                 URL titulní fotky
               </label>
@@ -150,7 +150,7 @@ function TripForm({ editingTrip, adminKey, onSaved, onCancel }: TripFormProps) {
             </div>
 
             {status === "error" && message && (
-              <p className="text-sm text-red-400">{message}</p>
+              <p className="text-sm text-destructive">{message}</p>
             )}
 
             <div className="flex gap-2">

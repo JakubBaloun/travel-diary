@@ -87,7 +87,7 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
         variant="ghost"
         size="sm"
         onClick={onBack}
-        className="mb-6 text-zinc-400 hover:text-zinc-200"
+        className="mb-6 text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="mr-1 size-4" />
         Zpět na dny
@@ -95,18 +95,18 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
 
       <div className="mb-8">
         <div className="flex items-center gap-3">
-          <span className="flex size-12 items-center justify-center rounded-full bg-zinc-700/50 text-lg font-bold text-zinc-200">
+          <span className="flex size-12 items-center justify-center rounded-full bg-badge text-lg font-bold text-badge-foreground">
             {day.dayNumber}
           </span>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
               {day.title || `Den ${day.dayNumber}`}
             </h1>
-            <p className="text-sm text-zinc-500">{formatDate(day.date)}</p>
+            <p className="text-sm text-muted-foreground">{formatDate(day.date)}</p>
           </div>
         </div>
         {day.summary && (
-          <p className="mt-2 text-sm text-zinc-400">{day.summary}</p>
+          <p className="mt-2 text-sm text-muted-foreground">{day.summary}</p>
         )}
       </div>
 
@@ -143,18 +143,18 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {entryType === "text" ? (
               <div className="flex flex-col gap-1.5">
-                <label htmlFor="content" className="text-sm text-zinc-400">Text</label>
+                <label htmlFor="content" className="text-sm text-muted-foreground">Text</label>
                 <textarea
                   id="content"
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
                   rows={4}
-                  className="flex w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+                  className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none dark:bg-input/30"
                 />
               </div>
             ) : (
               <div className="flex flex-col gap-1.5">
-                <label className="text-sm text-zinc-400">
+                <label className="text-sm text-muted-foreground">
                   Fotky (můžeš vybrat více)
                 </label>
                 <div className="flex items-center gap-3">
@@ -178,13 +178,13 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
                   )}
                 </div>
                 {photoFiles.length > 0 && (
-                  <p className="text-xs text-zinc-500">{photoFiles.length} fotek vybráno</p>
+                  <p className="text-xs text-muted-foreground">{photoFiles.length} fotek vybráno</p>
                 )}
               </div>
             )}
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="caption" className="text-sm text-zinc-400">
+              <label htmlFor="caption" className="text-sm text-muted-foreground">
                 Popisek (volitelný)
               </label>
               <Input
@@ -196,7 +196,7 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
             </div>
 
             {status === "error" && message && (
-              <p className="text-sm text-red-400">{message}</p>
+              <p className="text-sm text-destructive">{message}</p>
             )}
 
             <Button type="submit" disabled={status === "loading"}>
@@ -206,15 +206,17 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
         </CardContent>
       </Card>
 
-      {loading && <p className="text-center text-zinc-400">Načítám...</p>}
+      {loading && (
+        <p className="text-center text-muted-foreground">Načítám...</p>
+      )}
 
       {!loading && entries.length === 0 && (
-        <p className="pb-10 text-center text-zinc-500">Zatím žádné záznamy.</p>
+        <p className="pb-10 text-center text-muted-foreground">Zatím žádné záznamy.</p>
       )}
 
       {photoEntries.length > 0 && (
         <div className="mb-8">
-          <h2 className="mb-4 text-lg font-semibold text-zinc-200">Fotky</h2>
+          <h2 className="mb-4 text-lg font-semibold text-foreground">Fotky</h2>
           <PhotoGallery
             photos={photoEntries.map((e) => ({ id: e.id, url: e.photoUrl!, caption: e.caption }))}
           />
@@ -243,13 +245,13 @@ function AdminDayEntries({ day, entries, loading, adminKey, onBack, onEntriesCha
 
       {textEntries.length > 0 && (
         <div className="flex flex-col gap-4 pb-10">
-          <h2 className="text-lg font-semibold text-zinc-200">Texty</h2>
+          <h2 className="text-lg font-semibold text-foreground">Texty</h2>
           {textEntries.map((e) => (
             <Card key={e.id}>
               <CardContent className="p-4">
-                {e.content && <p className="text-zinc-300">{e.content}</p>}
+                {e.content && <p className="text-card-foreground/90">{e.content}</p>}
                 {e.caption && (
-                  <p className="mt-2 text-sm text-zinc-500">{e.caption}</p>
+                  <p className="mt-2 text-sm text-muted-foreground">{e.caption}</p>
                 )}
                 <div className="mt-3 flex justify-end gap-2">
                   <Button

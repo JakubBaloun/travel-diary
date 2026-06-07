@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import ThemeSwitcher from "@/components/ThemeSwitcher"
 import { logout } from "@/lib/auth"
 
 function Navbar() {
@@ -13,9 +14,9 @@ function Navbar() {
   }
 
   return (
-    <nav className="flex items-center justify-between border-b border-zinc-800 bg-zinc-950/80 px-6 py-3 backdrop-blur-sm">
+    <nav className="flex items-center justify-between border-b border-surface-border bg-surface px-6 py-3 text-surface-foreground">
       <div className="flex items-center gap-6">
-        <span className="text-sm font-semibold tracking-tight text-zinc-100">
+        <span className="text-sm font-semibold tracking-tight">
           Travel Diary
         </span>
         <div className="flex gap-1">
@@ -35,9 +36,12 @@ function Navbar() {
           </Button>
         </div>
       </div>
-      <Button variant="outline" size="xs" onClick={handleLogout}>
-        Odhlásit
-      </Button>
+      <div className="flex items-center gap-2">
+        <ThemeSwitcher />
+        <Button variant="outline" size="xs" onClick={handleLogout}>
+          Odhlásit
+        </Button>
+      </div>
     </nav>
   )
 }

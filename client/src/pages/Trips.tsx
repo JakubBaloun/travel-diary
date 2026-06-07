@@ -21,14 +21,18 @@ function Trips() {
   return (
     <div className="mx-auto max-w-5xl px-6 pt-10">
       <div className="mb-10 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-zinc-100">
+        <h1 className="text-4xl font-bold tracking-tight text-foreground">
           Seznam
         </h1>
       </div>
 
-      {loading && <p className="text-center text-zinc-400">Načítám...</p>}
+      {loading && (
+        <p className="text-center text-muted-foreground">Načítám...</p>
+      )}
 
-      {error && <p className="text-center text-sm text-red-400">{error}</p>}
+      {error && (
+        <p className="text-center text-sm text-destructive">{error}</p>
+      )}
 
       <div className="grid gap-8 pb-10 sm:grid-cols-2 lg:grid-cols-3">
         {trips.map((t) => (

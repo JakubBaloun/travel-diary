@@ -5,6 +5,21 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>client</title>
+    <script>
+      // Anti-flash: apply persisted theme before the first paint.
+      (function () {
+        try {
+          var THEMES = ["light","dark","sunset","ocean","forest","sepia","midnight"];
+          var DARK = ["dark","sunset","ocean","forest","midnight"];
+          var t = localStorage.getItem("travel-diary-theme");
+          if (THEMES.indexOf(t) === -1) t = "dark";
+          var root = document.documentElement;
+          root.dataset.theme = t;
+          if (DARK.indexOf(t) !== -1) root.classList.add("dark");
+          root.style.colorScheme = DARK.indexOf(t) !== -1 ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

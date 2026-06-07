@@ -69,7 +69,7 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
   return (
     <div className="mx-auto max-w-lg px-6 pt-10">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           {editingId ? "Upravit den" : "Nový den"}
         </h1>
         <Button variant="ghost" size="sm" onClick={onCancel}>
@@ -86,7 +86,7 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
         <CardContent>
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="dayNumber" className="text-sm text-zinc-400">
+              <label htmlFor="dayNumber" className="text-sm text-muted-foreground">
                 Číslo dne *
               </label>
               <Input
@@ -98,14 +98,14 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
                 required
               />
               {!editingId && (
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-muted-foreground">
                   Datum se dopočítá automaticky: {formatDate(date)}
                 </p>
               )}
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="date" className="text-sm text-zinc-400">
+              <label htmlFor="date" className="text-sm text-muted-foreground">
                 Datum *
               </label>
               <Input
@@ -118,7 +118,7 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="dayTitle" className="text-sm text-zinc-400">
+              <label htmlFor="dayTitle" className="text-sm text-muted-foreground">
                 Název (volitelný)
               </label>
               <Input
@@ -129,7 +129,7 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="summary" className="text-sm text-zinc-400">
+              <label htmlFor="summary" className="text-sm text-muted-foreground">
                 Shrnutí (volitelné)
               </label>
               <textarea
@@ -137,12 +137,12 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
                 value={summary}
                 onChange={(e) => setSummary(e.target.value)}
                 rows={3}
-                className="flex w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
+                className="flex w-full rounded-lg border border-input bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none dark:bg-input/30"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label htmlFor="coverPhotoUrl" className="text-sm text-zinc-400">
+              <label htmlFor="coverPhotoUrl" className="text-sm text-muted-foreground">
                 URL titulní fotky
               </label>
               <Input
@@ -155,7 +155,7 @@ function DayForm({ tripId, tripStartDate, nextDayNumber, editingDay, adminKey, o
             </div>
 
             {status === "error" && message && (
-              <p className="text-sm text-red-400">{message}</p>
+              <p className="text-sm text-destructive">{message}</p>
             )}
 
             <div className="flex gap-2">

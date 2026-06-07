@@ -18,7 +18,7 @@ function AdminTripList({ trips, loading, error, onCreate, onEdit, onDelete, onLo
   return (
     <div className="mx-auto max-w-3xl px-6 pt-10">
       <div className="mb-8 flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
           Admin
         </h1>
         <div className="flex gap-2">
@@ -29,12 +29,16 @@ function AdminTripList({ trips, loading, error, onCreate, onEdit, onDelete, onLo
         </div>
       </div>
 
-      {loading && <p className="text-center text-zinc-400">Načítám...</p>}
+      {loading && (
+        <p className="text-center text-muted-foreground">Načítám...</p>
+      )}
 
-      {error && <p className="text-center text-sm text-red-400">{error}</p>}
+      {error && (
+        <p className="text-center text-sm text-destructive">{error}</p>
+      )}
 
       {!loading && trips.length === 0 && (
-        <p className="text-center text-zinc-500">Zatím žádné tripy.</p>
+        <p className="text-center text-muted-foreground">Zatím žádné tripy.</p>
       )}
 
       <div className="flex flex-col gap-3 pb-10">
@@ -42,8 +46,8 @@ function AdminTripList({ trips, loading, error, onCreate, onEdit, onDelete, onLo
           <Card key={t.id}>
             <CardContent className="flex items-center justify-between p-4">
               <div>
-                <h3 className="font-semibold text-slate-800">{t.title}</h3>
-                <p className="text-sm text-zinc-500">
+                <h3 className="font-semibold text-card-foreground">{t.title}</h3>
+                <p className="text-sm text-muted-foreground">
                   {formatDate(t.startDate)} – {formatDate(t.endDate)}
                 </p>
               </div>

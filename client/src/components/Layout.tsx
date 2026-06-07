@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar"
 
 function Layout() {
   return (
-    <div className="min-h-dvh bg-gradient-to-br from-zinc-900 to-zinc-950">
+    <div className="min-h-dvh bg-page text-foreground">
       <Navbar />
       <Outlet />
     </div>

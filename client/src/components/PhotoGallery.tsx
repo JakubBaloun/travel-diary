@@ -22,7 +22,7 @@ function PhotoGallery({ photos }: PhotoGalleryProps) {
         {photos.map((photo, i) => (
           <button
             key={photo.id}
-            className="group aspect-square overflow-hidden rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-400"
+            className="group relative aspect-square overflow-hidden rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             onClick={() => setLightboxIndex(i)}
           >
             <img
@@ -57,7 +57,9 @@ function PhotoGallery({ photos }: PhotoGalleryProps) {
                 className="absolute left-4 text-white/70 hover:text-white"
                 onClick={(e) => {
                   e.stopPropagation()
-                  setLightboxIndex((prev) => prev !== null ? (prev - 1 + photos.length) % photos.length : 0)
+                  setLightboxIndex((prev) =>
+                    prev !== null ? (prev - 1 + photos.length) % photos.length : 0,
+                  )
                 }}
               >
                 <ChevronLeft className="size-8" />
@@ -66,7 +68,9 @@ function PhotoGallery({ photos }: PhotoGalleryProps) {
                 className="absolute right-4 text-white/70 hover:text-white"
                 onClick={(e) => {
                   e.stopPropagation()
-                  setLightboxIndex((prev) => prev !== null ? (prev + 1) % photos.length : 0)
+                  setLightboxIndex((prev) =>
+                    prev !== null ? (prev + 1) % photos.length : 0,
+                  )
                 }}
               >
                 <ChevronRight className="size-8" />

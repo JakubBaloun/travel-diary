@@ -30,7 +30,6 @@ function Admin() {
   const [selectedDay, setSelectedDay] = useState<DayData | null>(null)
   const [entries, setEntries] = useState<EntryData[]>([])
   const [entriesLoading, setEntriesLoading] = useState(false)
-  const [entriesError, setEntriesError] = useState("")
 
   useEffect(() => {
     if (!authenticated) return
@@ -120,14 +119,13 @@ function Admin() {
   async function openDayEntries(day: DayData) {
     if (!selectedTrip) return
     setEntriesLoading(true)
-    setEntriesError("")
     try {
       const data = await fetchDayBySlug(selectedTrip.slug, day.dayNumber)
       setSelectedDay(data)
       setEntries(data.entries || [])
       setView("dayEntries")
     } catch (e) {
-      setEntriesError(e instanceof Error ? e.message : "Neznámá chyba")
+      alert(e instanceof Error ? e.message : "Neznámá chyba")
     } finally {
       setEntriesLoading(false)
     }
@@ -136,13 +134,12 @@ function Admin() {
   async function reloadEntries() {
     if (!selectedTrip || !selectedDay) return
     setEntriesLoading(true)
-    setEntriesError("")
     try {
       const data = await fetchDayBySlug(selectedTrip.slug, selectedDay.dayNumber)
       setSelectedDay(data)
       setEntries(data.entries || [])
     } catch (e) {
-      setEntriesError(e instanceof Error ? e.message : "Neznámá chyba")
+      alert(e instanceof Error ? e.message : "Neznámá chyba")
     } finally {
       setEntriesLoading(false)
     }

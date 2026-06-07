@@ -58,10 +58,10 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
     <div className="mx-auto max-w-3xl px-6 pt-10">
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-100">
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">
             {trip.title}
           </h1>
-          <p className="text-sm text-zinc-500">
+          <p className="text-sm text-muted-foreground">
             {formatDate(trip.startDate)} – {formatDate(trip.endDate)}
           </p>
         </div>
@@ -80,7 +80,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
         <Card size="sm" className="mb-6">
           <CardContent className="flex items-end gap-4 p-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-xs text-zinc-400">Počet dní</label>
+              <label className="text-xs text-muted-foreground">Počet dní</label>
               <Input
                 type="number"
                 min={1}
@@ -90,7 +90,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
                 className="w-24"
               />
             </div>
-            <div className="text-xs text-zinc-500">
+            <div className="text-xs text-muted-foreground">
               <p>Od dne {nextDayNumber}</p>
               <p>Od {formatDate(addDays(trip.startDate, nextDayNumber - 1))}</p>
             </div>
@@ -102,18 +102,22 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
               {bulkStatus === "loading" ? "Vytvářím..." : "Vytvořit"}
             </Button>
             {bulkStatus === "error" && (
-              <p className="text-xs text-red-400">{bulkMessage}</p>
+              <p className="text-xs text-destructive">{bulkMessage}</p>
             )}
           </CardContent>
         </Card>
       )}
 
-      {loading && <p className="text-center text-zinc-400">Načítám...</p>}
+      {loading && (
+        <p className="text-center text-muted-foreground">Načítám...</p>
+      )}
 
-      {error && <p className="text-center text-sm text-red-400">{error}</p>}
+      {error && (
+        <p className="text-center text-sm text-destructive">{error}</p>
+      )}
 
       {!loading && days.length === 0 && (
-        <p className="text-center text-zinc-500">Zatím žádné dny.</p>
+        <p className="text-center text-muted-foreground">Zatím žádné dny.</p>
       )}
 
       <div className="grid gap-3 pb-10 sm:grid-cols-2 lg:grid-cols-3">
@@ -123,7 +127,7 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
             className="group block w-full text-left focus-visible:outline-none"
             onClick={() => onOpenEntries(d)}
           >
-            <Card className="overflow-hidden transition-all duration-200 group-hover:-translate-y-0.5 group-hover:ring-zinc-400 group-hover:shadow-lg group-hover:shadow-black/20">
+            <Card className="overflow-hidden transition-all duration-200 group-hover:-translate-y-0.5 group-hover:ring-ring/60 group-hover:shadow-lg group-hover:shadow-black/20">
               <div className="aspect-[3/1] overflow-hidden">
                 <img
                   src={d.coverPhotoUrl || trip.coverPhotoUrl || `https://picsum.photos/seed/${trip.slug}-${d.dayNumber}/600/200`}
@@ -133,18 +137,18 @@ function AdminDayList({ trip, days, loading, error, onCreate, onEdit, onDelete, 
               </div>
               <CardContent className="flex flex-col gap-3 p-4">
                 <div className="flex items-center gap-3">
-                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-800/80 text-sm font-bold text-zinc-200">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-badge text-sm font-bold text-badge-foreground">
                     {d.dayNumber}
                   </span>
                   <div className="min-w-0">
-                    <p className="text-xs text-zinc-500">{formatDate(d.date)}</p>
-                    <h3 className="truncate font-semibold text-slate-800">
+                    <p className="text-xs text-muted-foreground">{formatDate(d.date)}</p>
+                    <h3 className="truncate font-semibold text-card-foreground">
                       {d.title || `Den ${d.dayNumber}`}
                     </h3>
                   </div>
                 </div>
                 {d.summary && (
-                  <p className="line-clamp-2 text-sm text-zinc-600">{d.summary}</p>
+                  <p className="line-clamp-2 text-sm text-muted-foreground">{d.summary}</p>
                 )}
                 <div className="flex gap-2">
                   <Button

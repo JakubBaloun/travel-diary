@@ -1,28 +1,28 @@
-import { type FormEvent, useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { type FormEvent, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-const ADMIN_PASSWORD = "admin"
+const ADMIN_PASSWORD = "admin";
 
 interface AdminLoginProps {
-  onLogin: () => void
+  onLogin: () => void;
 }
 
 function AdminLogin({ onLogin }: AdminLoginProps) {
-  const [loginError, setLoginError] = useState(false)
+  const [loginError, setLoginError] = useState(false);
 
   function handleLogin(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const data = new FormData(e.currentTarget)
-    const password = data.get("password") as string
+    e.preventDefault();
+    const data = new FormData(e.currentTarget);
+    const password = data.get("password") as string;
 
     if (password === ADMIN_PASSWORD) {
-      localStorage.setItem("adminAuth", "true")
-      setLoginError(false)
-      onLogin()
+      localStorage.setItem("adminAuth", "true");
+      setLoginError(false);
+      onLogin();
     } else {
-      setLoginError(true)
+      setLoginError(true);
     }
   }
 
@@ -37,11 +37,12 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
             <Input
               name="password"
               type="password"
-              placeholder="Admin heslo"
               onChange={() => setLoginError(false)}
             />
             {loginError && (
-              <p className="text-center text-xs text-red-400">Špatné heslo</p>
+              <p className="text-center text-xs text-destructive">
+                Špatné heslo
+              </p>
             )}
             <Button type="submit" className="w-full">
               Vstoupit
@@ -50,7 +51,7 @@ function AdminLogin({ onLogin }: AdminLoginProps) {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
 
-export default AdminLogin
+export default AdminLogin;

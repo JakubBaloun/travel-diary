@@ -31,32 +31,36 @@ function TripDetail() {
         variant="ghost"
         size="sm"
         onClick={() => navigate("/trips")}
-        className="mb-6 text-zinc-400 hover:text-zinc-200"
+        className="mb-6 text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="mr-1 size-4" />
         Zpět
       </Button>
 
-      {loading && <p className="text-center text-zinc-400">Načítám...</p>}
+      {loading && (
+        <p className="text-center text-muted-foreground">Načítám...</p>
+      )}
 
-      {error && <p className="text-center text-sm text-red-400">{error}</p>}
+      {error && (
+        <p className="text-center text-sm text-destructive">{error}</p>
+      )}
 
       {trip && (
         <>
           <div className="mb-10">
-            <h1 className="text-3xl font-bold tracking-tight text-zinc-100">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
               {trip.title}
             </h1>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-muted-foreground">
               {formatDate(trip.startDate)} – {formatDate(trip.endDate)}
             </p>
             {trip.description && (
-              <p className="mt-4 text-zinc-300">{trip.description}</p>
+              <p className="mt-4 text-foreground/85">{trip.description}</p>
             )}
           </div>
 
           {trip.days.length === 0 ? (
-            <p className="text-center text-zinc-500">Zatím žádné dny.</p>
+            <p className="text-center text-muted-foreground">Zatím žádné dny.</p>
           ) : (
             <div className="grid gap-4 pb-10 sm:grid-cols-2 lg:grid-cols-3">
               {trip.days.map((d) => (
@@ -67,7 +71,7 @@ function TripDetail() {
                     navigate(`/trips/${trip.slug}/days/${d.dayNumber}`)
                   }
                 >
-                  <Card className="overflow-hidden transition-all duration-200 group-hover:-translate-y-0.5 group-hover:ring-zinc-400 group-hover:shadow-lg group-hover:shadow-black/20">
+                  <Card className="overflow-hidden transition-all duration-200 group-hover:-translate-y-0.5 group-hover:ring-ring/60 group-hover:shadow-lg group-hover:shadow-black/20">
                     <div className="aspect-[3/1] overflow-hidden">
                       <img
                         src={
@@ -81,18 +85,20 @@ function TripDetail() {
                     </div>
                     <CardContent className="flex flex-col gap-3 p-4">
                       <div className="flex items-center gap-3">
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-800/80 text-sm font-bold text-zinc-200">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-badge text-sm font-bold text-badge-foreground">
                           {d.dayNumber}
                         </span>
                         <div className="min-w-0">
-                          <h3 className="truncate font-semibold text-slate-800">
+                          <h3 className="truncate font-semibold text-card-foreground">
                             {d.title || `Den ${d.dayNumber}`}
                           </h3>
-                          <p className="text-xs text-zinc-500">{formatDate(d.date)}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatDate(d.date)}
+                          </p>
                         </div>
                       </div>
                       {d.summary && (
-                        <p className="line-clamp-3 text-sm text-zinc-400">
+                        <p className="line-clamp-3 text-sm text-muted-foreground">
                           {d.summary}
                         </p>
                       )}
