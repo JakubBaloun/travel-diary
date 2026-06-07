@@ -1,46 +1,100 @@
 import { getReaderToken, getAdminToken, logout, logoutAdmin } from "./auth"
 
-const API_BASE = "http://localhost:8080/api"
+const API_BASE = import.meta.env.VITE_API_BASE ?? "/api"
 
-function readerAuthHeader(): Record<string, string> {
-  const token = getReaderToken() ?? getAdminToken()
-  return token ? { Authorization: `Bearer ${token}` } : {}
+type AuthMode = "reader" | "admin"
+
+interface ApiFetchOptions extends Omit<RequestInit, "body"> {
+  body?: BodyInit | Record<string, unknown> | null
+  auth?: AuthMode
 }
 
-function adminAuthHeader(): Record<string, string> {
-  const token = getAdminToken()
-  return token ? { Authorization: `Bearer ${token}` } : {}
+interface ServerErrorBody {
+  statusCode?: number
+  message?: string
+  error?: string
 }
 
-async function readerFetch(input: string, init?: RequestInit): Promise<Response> {
-  const res = await fetch(input, {
-    ...init,
-    headers: { ...(init?.headers || {}), ...readerAuthHeader() },
-  })
-  if (res.status === 401) {
-    const path = typeof window !== "undefined" ? window.location.pathname : ""
-    if (!path.startsWith("/admin")) {
-      logout()
-      if (typeof window !== "undefined" && path !== "/") {
-        window.location.assign("/")
-      }
-    }
+export class ApiError extends Error {
+  readonly status: number
+  readonly code: string
+
+  constructor(message: string, status: number, code: string) {
+    super(message)
+    this.name = "ApiError"
+    this.status = status
+    this.code = code
   }
-  return res
 }
 
-async function adminFetch(input: string, init?: RequestInit): Promise<Response> {
-  const res = await fetch(input, {
-    ...init,
-    headers: { ...(init?.headers || {}), ...adminAuthHeader() },
-  })
-  if (res.status === 401) {
+function authHeader(mode: AuthMode): Record<string, string> {
+  const token = mode === "admin" ? getAdminToken() : getReaderToken() ?? getAdminToken()
+  return token ? { Authorization: `Bearer ${token}` } : {}
+}
+
+function handleUnauthorized(mode: AuthMode) {
+  if (typeof window === "undefined") return
+  const path = window.location.pathname
+
+  if (mode === "admin") {
     logoutAdmin()
-    if (typeof window !== "undefined" && !window.location.pathname.startsWith("/admin")) {
-      window.location.assign("/admin")
+    if (!path.startsWith("/admin")) window.location.assign("/admin")
+    return
+  }
+
+  if (!path.startsWith("/admin")) {
+    logout()
+    if (path !== "/") window.location.assign("/")
+  }
+}
+
+async function parseError(res: Response): Promise<ApiError> {
+  let message = `HTTP ${res.status}`
+  let code = res.statusText || "HttpError"
+  try {
+    const data = (await res.json()) as ServerErrorBody
+    if (data?.message) message = data.message
+    if (data?.error) code = data.error
+  } catch {
+    try {
+      const text = await res.text()
+      if (text) message = text
+    } catch {
+      /* ignore */
     }
   }
-  return res
+  return new ApiError(message, res.status, code)
+}
+
+async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise<T> {
+  const { auth = "reader", body, headers, ...rest } = options
+
+  const finalHeaders: Record<string, string> = { ...authHeader(auth) }
+  for (const [k, v] of Object.entries((headers as Record<string, string> | undefined) ?? {})) {
+    finalHeaders[k] = v
+  }
+
+  let finalBody: BodyInit | undefined
+  if (body instanceof FormData || body instanceof Blob || typeof body === "string") {
+    finalBody = body
+  } else if (body != null) {
+    finalHeaders["Content-Type"] = finalHeaders["Content-Type"] ?? "application/json"
+    finalBody = JSON.stringify(body)
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...rest,
+    headers: finalHeaders,
+    body: finalBody,
+  })
+
+  if (res.status === 401) handleUnauthorized(auth)
+  if (!res.ok) throw await parseError(res)
+
+  if (res.status === 204) return undefined as T
+  const contentType = res.headers.get("content-type") ?? ""
+  if (!contentType.includes("application/json")) return undefined as T
+  return (await res.json()) as T
 }
 
 export interface TripData {
@@ -82,56 +136,41 @@ export interface TripWithDays extends TripData {
   days: DayData[]
 }
 
-export async function fetchDayBySlug(slug: string, dayNumber: number): Promise<DayWithEntries> {
-  const res = await readerFetch(`${API_BASE}/trips/${slug}/days/${dayNumber}`)
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
+export function fetchDayBySlug(slug: string, dayNumber: number): Promise<DayWithEntries> {
+  return apiFetch<DayWithEntries>(`/trips/${slug}/days/${dayNumber}`)
 }
 
-export async function fetchTripBySlug(slug: string): Promise<TripWithDays> {
-  const res = await readerFetch(`${API_BASE}/trips/${slug}`)
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
+export function fetchTripBySlug(slug: string): Promise<TripWithDays> {
+  return apiFetch<TripWithDays>(`/trips/${slug}`)
 }
 
-export async function fetchTrips(): Promise<TripData[]> {
-  const res = await readerFetch(`${API_BASE}/trips`)
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
+export function fetchTrips(): Promise<TripData[]> {
+  return apiFetch<TripData[]>(`/trips`)
 }
 
 export async function uploadPhoto(file: File): Promise<string> {
   const formData = new FormData()
   formData.append("photo", file)
-
-  const res = await adminFetch(`${API_BASE}/admin/upload`, {
+  const data = await apiFetch<{ url: string }>(`/admin/upload`, {
     method: "POST",
     body: formData,
+    auth: "admin",
   })
-
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  const data = (await res.json()) as { url: string }
   return data.url
 }
 
-export async function createTrip(data: {
+export function createTrip(data: {
   title: string
   slug: string
   description?: string | null
   coverPhotoUrl?: string | null
   startDate: string
   endDate: string
-}) {
-  const res = await adminFetch(`${API_BASE}/admin/trips`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
+}): Promise<TripData> {
+  return apiFetch<TripData>(`/admin/trips`, { method: "POST", body: data, auth: "admin" })
 }
 
-export async function updateTrip(
+export function updateTrip(
   id: string,
   data: {
     title: string
@@ -141,23 +180,15 @@ export async function updateTrip(
     startDate: string
     endDate: string
   },
-) {
-  const res = await adminFetch(`${API_BASE}/admin/trips/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
+): Promise<TripData> {
+  return apiFetch<TripData>(`/admin/trips/${id}`, { method: "PATCH", body: data, auth: "admin" })
 }
 
-export async function fetchTripById(id: string): Promise<TripWithDays> {
-  const res = await adminFetch(`${API_BASE}/admin/trips/${id}`)
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
+export function fetchTripById(id: string): Promise<TripWithDays> {
+  return apiFetch<TripWithDays>(`/admin/trips/${id}`, { auth: "admin" })
 }
 
-export async function createDay(
+export function createDay(
   tripId: string,
   data: {
     dayNumber: number
@@ -166,17 +197,15 @@ export async function createDay(
     summary?: string | null
     coverPhotoUrl?: string | null
   },
-) {
-  const res = await adminFetch(`${API_BASE}/admin/trips/${tripId}/days`, {
+): Promise<DayData> {
+  return apiFetch<DayData>(`/admin/trips/${tripId}/days`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: data,
+    auth: "admin",
   })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
 }
 
-export async function updateDay(
+export function updateDay(
   id: string,
   data: {
     dayNumber?: number
@@ -185,67 +214,52 @@ export async function updateDay(
     summary?: string | null
     coverPhotoUrl?: string | null
   },
-) {
-  const res = await adminFetch(`${API_BASE}/admin/days/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
+): Promise<DayData> {
+  return apiFetch<DayData>(`/admin/days/${id}`, { method: "PATCH", body: data, auth: "admin" })
 }
 
-export async function deleteDay(id: string) {
-  const res = await adminFetch(`${API_BASE}/admin/days/${id}`, { method: "DELETE" })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
+export function deleteDay(id: string): Promise<void> {
+  return apiFetch<void>(`/admin/days/${id}`, { method: "DELETE", auth: "admin" })
 }
 
-export async function createEntry(
+export function createEntry(
   dayId: string,
   data: { type: "text"; content: string; caption?: string | null } | { type: "photo"; caption?: string | null },
   file?: File,
-) {
+): Promise<EntryData> {
   if (data.type === "photo" && file) {
     const formData = new FormData()
     formData.append("photo", file)
     formData.append("type", "photo")
     if (data.caption) formData.append("caption", data.caption)
-    const res = await adminFetch(`${API_BASE}/admin/days/${dayId}/entries`, {
+    return apiFetch<EntryData>(`/admin/days/${dayId}/entries`, {
       method: "POST",
       body: formData,
+      auth: "admin",
     })
-    if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-    return res.json()
   }
-
-  const res = await adminFetch(`${API_BASE}/admin/days/${dayId}/entries`, {
+  return apiFetch<EntryData>(`/admin/days/${dayId}/entries`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: data,
+    auth: "admin",
   })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
 }
 
-export async function updateEntry(
+export function updateEntry(
   id: string,
   data: { content?: string | null; caption?: string | null; sortOrder?: number },
-) {
-  const res = await adminFetch(`${API_BASE}/admin/entries/${id}`, {
+): Promise<EntryData> {
+  return apiFetch<EntryData>(`/admin/entries/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: data,
+    auth: "admin",
   })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
-  return res.json()
 }
 
-export async function deleteEntry(id: string) {
-  const res = await adminFetch(`${API_BASE}/admin/entries/${id}`, { method: "DELETE" })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
+export function deleteEntry(id: string): Promise<void> {
+  return apiFetch<void>(`/admin/entries/${id}`, { method: "DELETE", auth: "admin" })
 }
 
-export async function deleteTrip(id: string) {
-  const res = await adminFetch(`${API_BASE}/admin/trips/${id}`, { method: "DELETE" })
-  if (!res.ok) throw new Error((await res.text()) || `HTTP ${res.status}`)
+export function deleteTrip(id: string): Promise<void> {
+  return apiFetch<void>(`/admin/trips/${id}`, { method: "DELETE", auth: "admin" })
 }

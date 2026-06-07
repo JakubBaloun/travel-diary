@@ -1,10 +1,12 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import helmet from 'helmet';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const logger = new Logger('Bootstrap');
 
   app.use(helmet());
 
@@ -18,6 +20,8 @@ async function bootstrap() {
     }),
   );
 
+  app.useGlobalFilters(new HttpExceptionFilter());
+
   app.enableCors({
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
@@ -25,10 +29,11 @@ async function bootstrap() {
 
   const port = process.env.PORT || 8080;
   await app.listen(port);
-  console.log(`Server listening on port ${port}`);
+  logger.log(`Server listening on port ${port}`);
 }
 
 bootstrap().catch((err) => {
-  console.error('Error during bootstrap:', err);
+  const logger = new Logger('Bootstrap');
+  logger.error('Error during bootstrap', err instanceof Error ? err.stack : err);
   process.exit(1);
 });
