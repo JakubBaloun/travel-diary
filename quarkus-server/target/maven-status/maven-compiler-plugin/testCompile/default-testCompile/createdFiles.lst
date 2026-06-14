@@ -1,0 +1,12 @@
+com/traveldiary/DayResourceTest.class
+com/traveldiary/UploadResourceTest.class
+com/traveldiary/TripResourceTest.class
+com/traveldiary/EntryAdminResourceTest.class
+com/traveldiary/AuthResourceTest.class
+com/traveldiary/EntryServiceTest.class
+com/traveldiary/DayServiceTest.class
+com/traveldiary/TripServiceTest.class
+com/traveldiary/TestTokens.class
+com/traveldiary/TripAdminResourceTest.class
+com/traveldiary/AuthServiceTest.class
+com/traveldiary/DayAdminResourceTest.class

@@ -1,0 +1,45 @@
+quarkus:
+  http:
+    port: 8080
+    root-path: /
+    cors:
+      enabled: true
+      origins: ${CORS_ORIGIN:http://localhost:5173}
+      methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
+      headers: Content-Type,Authorization
+      exposed-headers: Content-Type,Authorization
+    access-log:
+      enabled: true
+      pattern: "%h %l %t \"%r\" %s %b %D ms"
+
+  datasource:
+    db-kind: postgresql
+    username: ${DB_USER:local}
+    password: ${DB_PASSWORD:local}
+    jdbc:
+      url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:travel_journal}
+
+  hibernate-orm:
+    database:
+      generation: update
+    quote-identifiers:
+      strategy: all
+
+  banner:
+    enabled: false
+
+app:
+  jwt:
+    secret: ${JWT_SECRET}
+  auth:
+    reader-password: ${READER_PASSWORD:travel}
+    admin-password: ${ADMIN_PASSWORD:admin}
+  b2:
+    endpoint: ${B2_ENDPOINT}
+    region: ${B2_REGION}
+    access-key-id: ${B2_ACCESS_KEY_ID}
+    secret-access-key: ${B2_SECRET_ACCESS_KEY}
+    bucket-name: ${B2_BUCKET_NAME}
+    public-url: ${B2_PUBLIC_URL}
+  cors:
+    origin: ${CORS_ORIGIN:http://localhost:5173}

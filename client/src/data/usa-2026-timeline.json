@@ -1,0 +1,530 @@
+{
+  "trip": {
+    "slug": "usa-2026",
+    "name": "USA Červenec 2026",
+    "timezone": "America/New_York",
+    "start": "2026-07-04T01:20:00-04:00",
+    "end": "2026-07-19T03:20:00-04:00"
+  },
+  "activityTypes": [
+    "flying",
+    "driving",
+    "train",
+    "walking",
+    "sightseeing",
+    "museum",
+    "shopping",
+    "hiking",
+    "viewpoint",
+    "sleeping",
+    "baseball",
+    "fireworks",
+    "exploring"
+  ],
+  "activities": [
+    {
+      "start": "2026-07-04T01:20:00-04:00",
+      "end": "2026-07-04T17:00:00-04:00",
+      "type": "flying",
+      "label": "Letíme do USA",
+      "location": { "name": "Praha → Boston", "lat": 42.3656, "lng": -71.0096 }
+    },
+    {
+      "start": "2026-07-04T17:00:00-04:00",
+      "end": "2026-07-04T21:30:00-04:00",
+      "type": "exploring",
+      "label": "Příjezd do Bostonu",
+      "location": { "name": "Boston, MA", "lat": 42.3601, "lng": -71.0589 }
+    },
+    {
+      "start": "2026-07-04T21:30:00-04:00",
+      "end": "2026-07-04T23:30:00-04:00",
+      "type": "fireworks",
+      "label": "Boston Pops 4th of July ohňostroj",
+      "location": { "name": "Memorial Drive, Cambridge", "lat": 42.3613, "lng": -71.0942 }
+    },
+    {
+      "start": "2026-07-04T23:30:00-04:00",
+      "end": "2026-07-05T09:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v Bostonu",
+      "location": { "name": "Stylish Downtown Studio, Boston", "lat": 42.3554, "lng": -71.0605 }
+    },
+
+    {
+      "start": "2026-07-05T09:00:00-04:00",
+      "end": "2026-07-05T16:00:00-04:00",
+      "type": "walking",
+      "label": "Freedom Trail, North End a Beacon Hill",
+      "location": { "name": "Boston Common a okolí", "lat": 42.3551, "lng": -71.0656 }
+    },
+    {
+      "start": "2026-07-05T16:00:00-04:00",
+      "end": "2026-07-05T22:30:00-04:00",
+      "type": "sightseeing",
+      "label": "Harvard University a večer v Cambridge",
+      "location": { "name": "Harvard Yard, Cambridge", "lat": 42.3744, "lng": -71.1169 }
+    },
+    {
+      "start": "2026-07-05T22:30:00-04:00",
+      "end": "2026-07-06T09:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v Bostonu",
+      "location": { "name": "Stylish Downtown Studio, Boston", "lat": 42.3554, "lng": -71.0605 }
+    },
+
+    {
+      "start": "2026-07-06T09:00:00-04:00",
+      "end": "2026-07-06T11:00:00-04:00",
+      "type": "exploring",
+      "label": "Vyzvednutí auta na Logan Airport",
+      "location": { "name": "Logan International Airport, Boston", "lat": 42.3656, "lng": -71.0096 }
+    },
+    {
+      "start": "2026-07-06T11:00:00-04:00",
+      "end": "2026-07-06T16:00:00-04:00",
+      "type": "driving",
+      "label": "Roadtrip: Boston → Vermont (přes Concord a Hanover)",
+      "location": { "name": "Hanover, NH", "lat": 43.7022, "lng": -72.2895 }
+    },
+    {
+      "start": "2026-07-06T16:00:00-04:00",
+      "end": "2026-07-06T18:00:00-04:00",
+      "type": "exploring",
+      "label": "Cold Hollow Cider Mill a Ben & Jerry's Factory",
+      "location": { "name": "Waterbury, VT", "lat": 44.3389, "lng": -72.7553 }
+    },
+    {
+      "start": "2026-07-06T18:00:00-04:00",
+      "end": "2026-07-06T21:30:00-04:00",
+      "type": "baseball",
+      "label": "Vermont Lake Monsters baseball",
+      "location": { "name": "Centennial Field, Burlington VT", "lat": 44.4759, "lng": -73.2014 }
+    },
+    {
+      "start": "2026-07-06T21:30:00-04:00",
+      "end": "2026-07-07T08:30:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v Colchesteru",
+      "location": { "name": "Motel 6, Colchester VT", "lat": 44.5436, "lng": -73.1487 }
+    },
+
+    {
+      "start": "2026-07-07T08:30:00-04:00",
+      "end": "2026-07-07T11:30:00-04:00",
+      "type": "driving",
+      "label": "Cesta k Mt. Washington",
+      "location": { "name": "White Mountains, NH", "lat": 44.1500, "lng": -71.7000 }
+    },
+    {
+      "start": "2026-07-07T11:30:00-04:00",
+      "end": "2026-07-07T15:00:00-04:00",
+      "type": "train",
+      "label": "Mt. Washington Cog Railway",
+      "location": { "name": "Mt. Washington Cog Railway", "lat": 44.2705, "lng": -71.3463 }
+    },
+    {
+      "start": "2026-07-07T15:00:00-04:00",
+      "end": "2026-07-07T18:00:00-04:00",
+      "type": "driving",
+      "label": "Kancamagus Highway: scénická cesta",
+      "location": { "name": "Kancamagus Highway, NH", "lat": 44.0432, "lng": -71.4500 }
+    },
+    {
+      "start": "2026-07-07T18:00:00-04:00",
+      "end": "2026-07-07T22:30:00-04:00",
+      "type": "exploring",
+      "label": "Večer v North Conway",
+      "location": { "name": "North Conway, NH", "lat": 44.0537, "lng": -71.1284 }
+    },
+    {
+      "start": "2026-07-07T22:30:00-04:00",
+      "end": "2026-07-08T09:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v North Conway",
+      "location": { "name": "Quality Inn, North Conway", "lat": 44.0537, "lng": -71.1284 }
+    },
+
+    {
+      "start": "2026-07-08T09:00:00-04:00",
+      "end": "2026-07-08T11:00:00-04:00",
+      "type": "hiking",
+      "label": "Diana's Baths a Cathedral Ledge",
+      "location": { "name": "White Mountains, NH", "lat": 44.0805, "lng": -71.1620 }
+    },
+    {
+      "start": "2026-07-08T11:00:00-04:00",
+      "end": "2026-07-08T13:00:00-04:00",
+      "type": "shopping",
+      "label": "Settlers Green Outlets (tax-free!)",
+      "location": { "name": "North Conway, NH", "lat": 44.0419, "lng": -71.1248 }
+    },
+    {
+      "start": "2026-07-08T13:00:00-04:00",
+      "end": "2026-07-08T17:00:00-04:00",
+      "type": "driving",
+      "label": "Cesta přes Sebago Lake do Portlandu",
+      "location": { "name": "Sebago Lake, ME", "lat": 43.9234, "lng": -70.4661 }
+    },
+    {
+      "start": "2026-07-08T17:00:00-04:00",
+      "end": "2026-07-08T19:00:00-04:00",
+      "type": "sightseeing",
+      "label": "Portland Head Light a Old Port",
+      "location": { "name": "Portland, ME", "lat": 43.6591, "lng": -70.2568 }
+    },
+    {
+      "start": "2026-07-08T19:00:00-04:00",
+      "end": "2026-07-08T22:30:00-04:00",
+      "type": "exploring",
+      "label": "Portland: lobster roll, craft beer a donuty",
+      "location": { "name": "Portland, ME", "lat": 43.6591, "lng": -70.2568 }
+    },
+    {
+      "start": "2026-07-08T22:30:00-04:00",
+      "end": "2026-07-09T09:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v Portlandu",
+      "location": { "name": "Super 8 by Wyndham, Westbrook ME", "lat": 43.6770, "lng": -70.3712 }
+    },
+
+    {
+      "start": "2026-07-09T09:00:00-04:00",
+      "end": "2026-07-09T12:00:00-04:00",
+      "type": "driving",
+      "label": "Pobřeží Maine: Kennebunkport a Kittery",
+      "location": { "name": "Maine coast", "lat": 43.3622, "lng": -70.4761 }
+    },
+    {
+      "start": "2026-07-09T12:00:00-04:00",
+      "end": "2026-07-09T13:30:00-04:00",
+      "type": "exploring",
+      "label": "Oběd v Portsmouthu",
+      "location": { "name": "Portsmouth, NH", "lat": 43.0717, "lng": -70.7626 }
+    },
+    {
+      "start": "2026-07-09T13:30:00-04:00",
+      "end": "2026-07-09T17:00:00-04:00",
+      "type": "driving",
+      "label": "Cesta Portsmouth → Mystic",
+      "location": { "name": "Mystic, CT", "lat": 41.3548, "lng": -71.9665 }
+    },
+    {
+      "start": "2026-07-09T17:00:00-04:00",
+      "end": "2026-07-09T21:00:00-04:00",
+      "type": "sightseeing",
+      "label": "Yale University a New Haven Apizza",
+      "location": { "name": "Yale, New Haven CT", "lat": 41.3163, "lng": -72.9223 }
+    },
+    {
+      "start": "2026-07-09T21:00:00-04:00",
+      "end": "2026-07-10T09:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v Milfordu",
+      "location": { "name": "Mayflower Motel, Milford CT", "lat": 41.2237, "lng": -73.0566 }
+    },
+
+    {
+      "start": "2026-07-10T09:00:00-04:00",
+      "end": "2026-07-10T12:00:00-04:00",
+      "type": "driving",
+      "label": "Milford → vrácení auta ve White Plains (HPN)",
+      "location": { "name": "White Plains Airport (HPN)", "lat": 41.0670, "lng": -73.7076 }
+    },
+    {
+      "start": "2026-07-10T12:00:00-04:00",
+      "end": "2026-07-10T14:00:00-04:00",
+      "type": "train",
+      "label": "Metro-North do Grand Central, metrem do Queens",
+      "location": { "name": "Manhattan, NYC", "lat": 40.7527, "lng": -73.9772 }
+    },
+    {
+      "start": "2026-07-10T14:00:00-04:00",
+      "end": "2026-07-10T19:00:00-04:00",
+      "type": "exploring",
+      "label": "Check-in v LIC, odpočinek po týdnu na cestách",
+      "location": { "name": "LIC Manhattan View Hotel, Long Island City", "lat": 40.7505, "lng": -73.9395 }
+    },
+    {
+      "start": "2026-07-10T19:00:00-04:00",
+      "end": "2026-07-10T23:00:00-04:00",
+      "type": "viewpoint",
+      "label": "Gantry Plaza State Park: panorama Manhattanu",
+      "location": { "name": "Gantry Plaza State Park, LIC", "lat": 40.7474, "lng": -73.9576 }
+    },
+    {
+      "start": "2026-07-10T23:00:00-04:00",
+      "end": "2026-07-11T09:30:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-11T09:30:00-04:00",
+      "end": "2026-07-11T14:00:00-04:00",
+      "type": "museum",
+      "label": "The Metropolitan Museum of Art",
+      "location": { "name": "Upper East Side, NYC", "lat": 40.7794, "lng": -73.9632 }
+    },
+    {
+      "start": "2026-07-11T14:00:00-04:00",
+      "end": "2026-07-11T18:00:00-04:00",
+      "type": "walking",
+      "label": "Central Park a 5th Avenue",
+      "location": { "name": "Central Park, NYC", "lat": 40.7829, "lng": -73.9654 }
+    },
+    {
+      "start": "2026-07-11T18:00:00-04:00",
+      "end": "2026-07-11T23:00:00-04:00",
+      "type": "baseball",
+      "label": "NY Mets vs. Boston Red Sox",
+      "location": { "name": "Citi Field, Queens", "lat": 40.7571, "lng": -73.8458 }
+    },
+    {
+      "start": "2026-07-11T23:00:00-04:00",
+      "end": "2026-07-12T09:30:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-12T09:30:00-04:00",
+      "end": "2026-07-12T13:00:00-04:00",
+      "type": "museum",
+      "label": "Intrepid Sea, Air & Space Museum",
+      "location": { "name": "Pier 86, Manhattan", "lat": 40.7644, "lng": -74.0009 }
+    },
+    {
+      "start": "2026-07-12T13:00:00-04:00",
+      "end": "2026-07-12T17:00:00-04:00",
+      "type": "walking",
+      "label": "High Line a Hudson Yards",
+      "location": { "name": "Hudson Yards, NYC", "lat": 40.7536, "lng": -74.0023 }
+    },
+    {
+      "start": "2026-07-12T17:00:00-04:00",
+      "end": "2026-07-12T19:30:00-04:00",
+      "type": "viewpoint",
+      "label": "Edge Observation Deck",
+      "location": { "name": "Edge, Hudson Yards", "lat": 40.7540, "lng": -74.0017 }
+    },
+    {
+      "start": "2026-07-12T19:30:00-04:00",
+      "end": "2026-07-12T23:00:00-04:00",
+      "type": "viewpoint",
+      "label": "Empire State Building večer",
+      "location": { "name": "Empire State Building", "lat": 40.7484, "lng": -73.9857 }
+    },
+    {
+      "start": "2026-07-12T23:00:00-04:00",
+      "end": "2026-07-13T09:30:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-13T09:30:00-04:00",
+      "end": "2026-07-13T13:30:00-04:00",
+      "type": "museum",
+      "label": "9/11 Memorial & Museum",
+      "location": { "name": "Ground Zero, Manhattan", "lat": 40.7115, "lng": -74.0134 }
+    },
+    {
+      "start": "2026-07-13T13:30:00-04:00",
+      "end": "2026-07-13T15:30:00-04:00",
+      "type": "viewpoint",
+      "label": "One World Observatory",
+      "location": { "name": "Freedom Tower, Manhattan", "lat": 40.7127, "lng": -74.0134 }
+    },
+    {
+      "start": "2026-07-13T15:30:00-04:00",
+      "end": "2026-07-13T19:00:00-04:00",
+      "type": "walking",
+      "label": "Wall Street, Brooklyn Bridge a DUMBO",
+      "location": { "name": "Lower Manhattan / DUMBO", "lat": 40.7033, "lng": -73.9890 }
+    },
+    {
+      "start": "2026-07-13T19:00:00-04:00",
+      "end": "2026-07-13T23:00:00-04:00",
+      "type": "exploring",
+      "label": "Večer v Brooklynu",
+      "location": { "name": "DUMBO, Brooklyn", "lat": 40.7033, "lng": -73.9890 }
+    },
+    {
+      "start": "2026-07-13T23:00:00-04:00",
+      "end": "2026-07-14T09:30:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-14T09:30:00-04:00",
+      "end": "2026-07-14T12:00:00-04:00",
+      "type": "viewpoint",
+      "label": "Top of the Rock",
+      "location": { "name": "Rockefeller Center, NYC", "lat": 40.7587, "lng": -73.9787 }
+    },
+    {
+      "start": "2026-07-14T12:00:00-04:00",
+      "end": "2026-07-14T14:00:00-04:00",
+      "type": "sightseeing",
+      "label": "Rockefeller Center a katedrála sv. Patrika",
+      "location": { "name": "Midtown, NYC", "lat": 40.7585, "lng": -73.9758 }
+    },
+    {
+      "start": "2026-07-14T14:00:00-04:00",
+      "end": "2026-07-14T18:00:00-04:00",
+      "type": "shopping",
+      "label": "5th Avenue",
+      "location": { "name": "5th Avenue, NYC", "lat": 40.7614, "lng": -73.9776 }
+    },
+    {
+      "start": "2026-07-14T18:00:00-04:00",
+      "end": "2026-07-14T23:00:00-04:00",
+      "type": "exploring",
+      "label": "Times Square a večer v Midtownu",
+      "location": { "name": "Times Square, NYC", "lat": 40.7580, "lng": -73.9855 }
+    },
+    {
+      "start": "2026-07-14T23:00:00-04:00",
+      "end": "2026-07-15T05:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC (brzký budíček do D.C.!)",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-15T05:00:00-04:00",
+      "end": "2026-07-15T08:45:00-04:00",
+      "type": "train",
+      "label": "Amtrak Acela do Washingtonu D.C.",
+      "location": { "name": "Northeast Corridor", "lat": 39.9526, "lng": -75.1652 }
+    },
+    {
+      "start": "2026-07-15T08:45:00-04:00",
+      "end": "2026-07-15T14:00:00-04:00",
+      "type": "walking",
+      "label": "National Mall: Capitol, monumenty, Lincoln Memorial",
+      "location": { "name": "National Mall, Washington D.C.", "lat": 38.8895, "lng": -77.0353 }
+    },
+    {
+      "start": "2026-07-15T14:00:00-04:00",
+      "end": "2026-07-15T17:00:00-04:00",
+      "type": "museum",
+      "label": "Smithsonian Air & Space Museum a Bílý dům",
+      "location": { "name": "Smithsonian, Washington D.C.", "lat": 38.8882, "lng": -77.0199 }
+    },
+    {
+      "start": "2026-07-15T17:00:00-04:00",
+      "end": "2026-07-15T20:15:00-04:00",
+      "type": "train",
+      "label": "Amtrak zpět do NYC",
+      "location": { "name": "Northeast Corridor", "lat": 39.9526, "lng": -75.1652 }
+    },
+    {
+      "start": "2026-07-15T20:15:00-04:00",
+      "end": "2026-07-15T22:30:00-04:00",
+      "type": "exploring",
+      "label": "Cesta na hotel a večeře",
+      "location": { "name": "Manhattan, NYC", "lat": 40.7506, "lng": -73.9935 }
+    },
+    {
+      "start": "2026-07-15T22:30:00-04:00",
+      "end": "2026-07-16T08:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-16T08:00:00-04:00",
+      "end": "2026-07-16T13:00:00-04:00",
+      "type": "sightseeing",
+      "label": "Socha Svobody a Ellis Island",
+      "location": { "name": "Liberty Island, NYC", "lat": 40.6892, "lng": -74.0445 }
+    },
+    {
+      "start": "2026-07-16T13:00:00-04:00",
+      "end": "2026-07-16T16:00:00-04:00",
+      "type": "sightseeing",
+      "label": "FRIENDS Experience",
+      "location": { "name": "Gramercy, NYC", "lat": 40.7395, "lng": -73.9836 }
+    },
+    {
+      "start": "2026-07-16T16:00:00-04:00",
+      "end": "2026-07-16T20:00:00-04:00",
+      "type": "walking",
+      "label": "West Village, Magnolia Bakery a Washington Square",
+      "location": { "name": "West Village, NYC", "lat": 40.7359, "lng": -74.0058 }
+    },
+    {
+      "start": "2026-07-16T20:00:00-04:00",
+      "end": "2026-07-16T23:00:00-04:00",
+      "type": "sightseeing",
+      "label": "Circle Line: Harbor Lights cruise",
+      "location": { "name": "Pier 83, Hudson River", "lat": 40.7611, "lng": -74.0023 }
+    },
+    {
+      "start": "2026-07-16T23:00:00-04:00",
+      "end": "2026-07-17T09:30:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-17T09:30:00-04:00",
+      "end": "2026-07-17T13:00:00-04:00",
+      "type": "museum",
+      "label": "American Museum of Natural History",
+      "location": { "name": "Upper West Side, NYC", "lat": 40.7813, "lng": -73.9740 }
+    },
+    {
+      "start": "2026-07-17T13:00:00-04:00",
+      "end": "2026-07-17T17:00:00-04:00",
+      "type": "walking",
+      "label": "Central Park: Bethesda Fountain, Bow Bridge",
+      "location": { "name": "Central Park, NYC", "lat": 40.7748, "lng": -73.9706 }
+    },
+    {
+      "start": "2026-07-17T17:00:00-04:00",
+      "end": "2026-07-17T22:30:00-04:00",
+      "type": "exploring",
+      "label": "Brooklyn: DUMBO a Williamsburg",
+      "location": { "name": "Williamsburg, Brooklyn", "lat": 40.7081, "lng": -73.9571 }
+    },
+    {
+      "start": "2026-07-17T22:30:00-04:00",
+      "end": "2026-07-18T09:00:00-04:00",
+      "type": "sleeping",
+      "label": "Spíme v LIC (poslední noc!)",
+      "location": { "name": "LIC Manhattan View Hotel", "lat": 40.7505, "lng": -73.9395 }
+    },
+
+    {
+      "start": "2026-07-18T09:00:00-04:00",
+      "end": "2026-07-18T15:00:00-04:00",
+      "type": "exploring",
+      "label": "Poslední den v NYC (MoMA / Coney Island / SoHo)",
+      "location": { "name": "Manhattan, NYC", "lat": 40.7614, "lng": -73.9776 }
+    },
+    {
+      "start": "2026-07-18T15:00:00-04:00",
+      "end": "2026-07-18T19:20:00-04:00",
+      "type": "exploring",
+      "label": "Cesta na JFK a odbavení",
+      "location": { "name": "JFK Airport, NYC", "lat": 40.6413, "lng": -73.7781 }
+    },
+    {
+      "start": "2026-07-18T19:20:00-04:00",
+      "end": "2026-07-19T03:20:00-04:00",
+      "type": "flying",
+      "label": "Letíme domů: NYC → Praha",
+      "location": { "name": "NYC → Praha", "lat": 50.1004, "lng": 14.2640 }
+    }
+  ]
+}

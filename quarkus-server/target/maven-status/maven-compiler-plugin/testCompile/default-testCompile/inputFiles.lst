@@ -1,0 +1,12 @@
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/AuthResourceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/AuthServiceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/DayAdminResourceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/DayResourceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/DayServiceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/EntryAdminResourceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/EntryServiceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/TestTokens.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/TripAdminResourceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/TripResourceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/TripServiceTest.java
+/Users/jakub/Documents/dev/travel-diary/quarkus-server/src/test/java/com/traveldiary/UploadResourceTest.java

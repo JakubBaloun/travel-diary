@@ -548,7 +548,82 @@
     }
 }
 
+@keyframes activity-flying {
+    0%, 100% { transform: translate(-8px, -2px) rotate(-3deg); }
+    50%      { transform: translate(8px, 2px) rotate(3deg); }
+}
+@keyframes activity-driving {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    25%      { transform: translateY(-4px) rotate(0deg); }
+    50%      { transform: translateY(0) rotate(1deg); }
+    75%      { transform: translateY(-3px) rotate(0deg); }
+}
+@keyframes activity-train {
+    0%, 100% { transform: translateX(-8px); }
+    50%      { transform: translateX(8px); }
+}
+@keyframes activity-walking {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50%      { transform: translateY(-6px) rotate(4deg); }
+}
+@keyframes activity-hiking {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50%      { transform: translateY(-8px) rotate(5deg); }
+}
+@keyframes activity-sightseeing {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-5px); }
+}
+@keyframes activity-museum {
+    0%, 100% { transform: scale(1) rotate(-2deg); }
+    50%      { transform: scale(1.08) rotate(2deg); }
+}
+@keyframes activity-shopping {
+    0%, 100% { transform: rotate(-12deg); }
+    50%      { transform: rotate(12deg); }
+}
+@keyframes activity-viewpoint {
+    0%, 100% { transform: scale(0.9); }
+    50%      { transform: scale(1.12); }
+}
+@keyframes activity-sleeping {
+    0%, 100% { transform: scale(0.95); opacity: 0.7; }
+    50%      { transform: scale(1.02); opacity: 1; }
+}
+@keyframes activity-baseball {
+    0%   { transform: translateY(0) rotate(0deg); }
+    50%  { transform: translateY(-10px) rotate(180deg); }
+    100% { transform: translateY(0) rotate(360deg); }
+}
+@keyframes activity-fireworks {
+    0%, 100% { transform: scale(1) rotate(-5deg); }
+    50%      { transform: scale(1.25) rotate(5deg); }
+}
+@keyframes activity-exploring {
+    0%, 100% { transform: rotate(-6deg); }
+    50%      { transform: rotate(6deg); }
+}
+
 @layer utilities {
+    .activity-icon {
+        display: inline-block;
+        transform-origin: center;
+        will-change: transform;
+    }
+    .activity-flying      { animation: activity-flying      3s   ease-in-out infinite; }
+    .activity-driving     { animation: activity-driving     0.8s ease-in-out infinite; }
+    .activity-train       { animation: activity-train       2.4s ease-in-out infinite; }
+    .activity-walking     { animation: activity-walking     0.6s ease-in-out infinite; }
+    .activity-hiking      { animation: activity-hiking      0.8s ease-in-out infinite; }
+    .activity-sightseeing { animation: activity-sightseeing 2.8s ease-in-out infinite; }
+    .activity-museum      { animation: activity-museum      3s   ease-in-out infinite; }
+    .activity-shopping    { animation: activity-shopping    1.6s ease-in-out infinite; }
+    .activity-viewpoint   { animation: activity-viewpoint   2.5s ease-in-out infinite; }
+    .activity-sleeping    { animation: activity-sleeping    3.2s ease-in-out infinite; }
+    .activity-baseball    { animation: activity-baseball    1.2s ease-in-out infinite; }
+    .activity-fireworks   { animation: activity-fireworks   0.7s ease-in-out infinite; }
+    .activity-exploring   { animation: activity-exploring   2.4s ease-in-out infinite; }
+
     /* Page-wide background gradient — used by Layout / Login / etc. */
     .bg-page {
         background-image: linear-gradient(

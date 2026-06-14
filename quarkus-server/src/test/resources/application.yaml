@@ -1,0 +1,39 @@
+quarkus:
+  http:
+    port: 8081
+    root-path: /
+    cors:
+      enabled: false
+
+  datasource:
+    db-kind: h2
+    jdbc:
+      url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+
+  hibernate-orm:
+    database:
+      generation: drop-and-create
+    quote-identifiers:
+      strategy: only-keywords
+    log:
+      sql: false
+
+  banner:
+    enabled: false
+
+  log:
+    level: WARN
+
+app:
+  jwt:
+    secret: test-jwt-secret-that-is-long-enough-for-hmac-sha256
+  auth:
+    reader-password: test-reader-pass
+    admin-password: test-admin-pass
+  b2:
+    endpoint: http://localhost:9000
+    region: us-east-1
+    access-key-id: test-key
+    secret-access-key: test-secret
+    bucket-name: test-bucket
+    public-url: http://localhost:9000/test-bucket
