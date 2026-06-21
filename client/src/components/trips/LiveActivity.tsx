@@ -6,7 +6,7 @@ import {
   getCurrentActivity,
 } from "@/data/timeline"
 
-const ACTIVITY_EMOJI: Record<ActivityType, string> = {
+export const ACTIVITY_EMOJI: Record<ActivityType, string> = {
   flying: "✈️",
   driving: "🚗",
   train: "🚆",
@@ -28,9 +28,9 @@ function daysLabel(days: number): string {
   return "dní"
 }
 
-type Variant = "panel" | "chip"
+export type LiveActivityVariant = "panel" | "chip"
 
-interface DisplayData {
+export interface LiveActivityData {
   type: ActivityType
   emoji: string
   primary: string
@@ -38,7 +38,7 @@ interface DisplayData {
   topLabel: string
 }
 
-function useDisplayData(): DisplayData | null {
+function useDisplayData(): LiveActivityData | null {
   const [now, setNow] = useState(() => Date.now())
 
   useEffect(() => {
@@ -71,15 +71,18 @@ function useDisplayData(): DisplayData | null {
     type: current.type,
     emoji: ACTIVITY_EMOJI[current.type],
     primary: current.label,
-    secondary: current.location.name,
+    secondary: current.type === "sleeping" ? "" : current.location.name,
     topLabel: "Právě teď",
   }
 }
 
-export function LiveActivity({ variant = "panel" }: { variant?: Variant }) {
-  const data = useDisplayData()
-  if (!data) return null
-
+export function LiveActivityView({
+  data,
+  variant = "panel",
+}: {
+  data: LiveActivityData
+  variant?: LiveActivityVariant
+}) {
   if (variant === "chip") {
     return (
       <div className="flex max-w-[280px] items-center gap-3 rounded-2xl bg-brand px-4 py-3 text-brand-foreground shadow-xl shadow-black/25 ring-1 ring-foreground/10">
@@ -95,9 +98,11 @@ export function LiveActivity({ variant = "panel" }: { variant?: Variant }) {
           <div className="truncate text-sm font-bold leading-tight">
             {data.primary}
           </div>
-          <div className="truncate text-[11px] opacity-80">
-            {data.secondary}
-          </div>
+          {data.secondary && (
+            <div className="truncate text-[11px] opacity-80">
+              {data.secondary}
+            </div>
+          )}
         </div>
       </div>
     )
@@ -118,11 +123,23 @@ export function LiveActivity({ variant = "panel" }: { variant?: Variant }) {
           <div className="truncate text-sm font-semibold text-foreground">
             {data.primary}
           </div>
-          <div className="truncate text-[11px] text-muted-foreground">
-            {data.secondary}
-          </div>
+          {data.secondary && (
+            <div className="truncate text-[11px] text-muted-foreground">
+              {data.secondary}
+            </div>
+          )}
         </div>
       </div>
     </Card>
   )
+}
+
+export function LiveActivity({
+  variant = "panel",
+}: {
+  variant?: LiveActivityVariant
+}) {
+  const data = useDisplayData()
+  if (!data) return null
+  return <LiveActivityView data={data} variant={variant} />
 }

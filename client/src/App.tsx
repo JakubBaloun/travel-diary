@@ -4,6 +4,7 @@ import Trips from "@/pages/Trips"
 import TripDetail from "@/pages/TripDetail"
 import DayDetail from "@/pages/DayDetail"
 import Admin from "@/pages/Admin"
+import DevLiveActivity from "@/pages/DevLiveActivity"
 import Layout from "@/components/Layout"
 import TripLayout from "@/components/TripLayout"
 
@@ -18,6 +19,7 @@ function App() {
           <Route path="/trips/:slug/days/:dayNumber" element={<DayDetail />} />
         </Route>
         <Route path="/admin" element={<Admin />} />
+        <Route path="/dev/live-activity" element={<DevLiveActivity />} />
       </Route>
     </Routes>
   )
