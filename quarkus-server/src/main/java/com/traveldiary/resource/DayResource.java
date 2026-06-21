@@ -7,25 +7,32 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
-import com.traveldiary.auth.JwtAuth;
-import com.traveldiary.service.DayService;
-import com.traveldiary.service.TripService;
+import io.smallrye.common.annotation.Blocking;
 
-@Path("/api/trips/{slug}/days")
+import com.traveldiary.auth.JwtAuth;
+import com.traveldiary.service.DayContentService;
+
+@Path("/api/days")
 @JwtAuth
+@Blocking
 public class DayResource {
 
     @Inject
-    DayService dayService;
+    DayContentService dayContentService;
 
-    @Inject
-    TripService tripService;
+    /** Per-day status for the map. Non-published days never leak photo URLs. */
+    @GET
+    @Path("/summary")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Object summary() {
+        return dayContentService.listSummaries(true);
+    }
 
+    /** Full day with photos — only if published. */
     @GET
     @Path("/{dayNumber}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Object findByDayNumber(@PathParam("slug") String slug, @PathParam("dayNumber") int dayNumber) {
-        var trip = tripService.findBySlug(slug);
-        return dayService.findByTripIdAndDayNumber(trip.getId(), dayNumber);
+    public Object findOne(@PathParam("dayNumber") int dayNumber) {
+        return dayContentService.findPublished(dayNumber);
     }
 }
