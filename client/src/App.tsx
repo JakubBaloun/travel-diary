@@ -1,27 +1,26 @@
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, Navigate } from "react-router-dom"
 import Login from "@/pages/Login"
-import Trips from "@/pages/Trips"
-import TripDetail from "@/pages/TripDetail"
-import DayDetail from "@/pages/DayDetail"
-import Admin from "@/pages/Admin"
-import DevLiveActivity from "@/pages/DevLiveActivity"
 import Layout from "@/components/Layout"
-import TripLayout from "@/components/TripLayout"
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Login />} />
       <Route element={<Layout />}>
-        <Route path="/trips" element={<Trips />} />
-        <Route element={<TripLayout />}>
-          <Route path="/trips/:slug" element={<TripDetail />} />
-          <Route path="/trips/:slug/days/:dayNumber" element={<DayDetail />} />
-        </Route>
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/dev/live-activity" element={<DevLiveActivity />} />
+        <Route path="/mapa" element={<ComingSoon label="Mapa — přijde v PR 3" />} />
+        <Route path="/den/:dayNumber" element={<ComingSoon label="Den — přijde v PR 4" />} />
+        <Route path="/admin" element={<ComingSoon label="Admin — přijde v PR 5" />} />
       </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+  )
+}
+
+function ComingSoon({ label }: { label: string }) {
+  return (
+    <div className="mx-auto max-w-3xl px-6 pt-20 text-center text-muted-foreground">
+      {label}
+    </div>
   )
 }
 

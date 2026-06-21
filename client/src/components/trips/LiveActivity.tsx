@@ -1,79 +1,61 @@
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import {
-  type ActivityType,
-  getActiveTimeline,
-  getCurrentActivity,
-} from "@/data/timeline"
-
-export const ACTIVITY_EMOJI: Record<ActivityType, string> = {
-  flying: "✈️",
-  driving: "🚗",
-  train: "🚆",
-  walking: "🚶",
-  sightseeing: "🏛️",
-  museum: "🖼️",
-  shopping: "🛍️",
-  hiking: "🥾",
-  viewpoint: "🔭",
-  sleeping: "😴",
-  baseball: "⚾",
-  fireworks: "🎆",
-  exploring: "🗺️",
-}
-
-function daysLabel(days: number): string {
-  if (days === 1) return "den"
-  if (days >= 2 && days <= 4) return "dny"
-  return "dní"
-}
+  getCurrentDayNumber,
+  getDay,
+  getDaysUntilStart,
+  getPhase,
+  trip,
+} from "@/data/itinerary"
 
 export type LiveActivityVariant = "panel" | "chip"
 
-export interface LiveActivityData {
-  type: ActivityType
+interface LiveActivityData {
   emoji: string
+  topLabel: string
   primary: string
   secondary: string
-  topLabel: string
+}
+
+function pickDaysWord(n: number): string {
+  if (n === 1) return "den"
+  if (n >= 2 && n <= 4) return "dny"
+  return "dní"
 }
 
 function useDisplayData(): LiveActivityData | null {
-  const [now, setNow] = useState(() => Date.now())
+  const [now, setNow] = useState(() => new Date())
 
   useEffect(() => {
-    const id = setInterval(() => setNow(Date.now()), 60_000)
+    const id = setInterval(() => setNow(new Date()), 60_000)
     return () => clearInterval(id)
   }, [])
 
-  const active = getActiveTimeline(now)
-  if (!active) return null
+  const phase = getPhase(now)
 
-  const { timeline, phase } = active
-
-  if (phase === "upcoming") {
-    const days = Math.ceil(
-      (new Date(timeline.trip.start).getTime() - now) / 86_400_000,
-    )
+  if (phase === "before") {
+    const days = getDaysUntilStart(now)
     return {
-      type: "exploring",
-      emoji: ACTIVITY_EMOJI.exploring,
-      primary: `${days} ${daysLabel(days)}`,
-      secondary: timeline.trip.name,
+      emoji: "✈️",
       topLabel: "Odlet za",
+      primary: `${days} ${pickDaysWord(days)}`,
+      secondary: trip.name,
     }
   }
 
-  const current = getCurrentActivity(timeline, now)
-  if (!current) return null
-
-  return {
-    type: current.type,
-    emoji: ACTIVITY_EMOJI[current.type],
-    primary: current.label,
-    secondary: current.type === "sleeping" ? "" : current.location.name,
-    topLabel: "Právě teď",
+  if (phase === "during") {
+    const n = getCurrentDayNumber(now)
+    const day = n ? getDay(n) : undefined
+    if (!day) return null
+    return {
+      emoji: day.emoji,
+      topLabel: `Den ${day.dayNumber} · live`,
+      primary: day.title,
+      secondary: day.place,
+    }
   }
+
+  return null
 }
 
 export function LiveActivityView({
@@ -86,22 +68,14 @@ export function LiveActivityView({
   if (variant === "chip") {
     return (
       <div className="flex max-w-[280px] items-center gap-3 rounded-2xl bg-brand px-4 py-3 text-brand-foreground shadow-xl shadow-black/25 ring-1 ring-foreground/10">
-        <span
-          className={`activity-icon activity-${data.type} text-2xl leading-none`}
-        >
-          {data.emoji}
-        </span>
+        <span className="text-2xl leading-none">{data.emoji}</span>
         <div className="min-w-0">
           <div className="text-[10px] font-semibold tracking-wide uppercase opacity-75">
             {data.topLabel}
           </div>
-          <div className="truncate text-sm font-bold leading-tight">
-            {data.primary}
-          </div>
+          <div className="truncate text-sm font-bold leading-tight">{data.primary}</div>
           {data.secondary && (
-            <div className="truncate text-[11px] opacity-80">
-              {data.secondary}
-            </div>
+            <div className="truncate text-[11px] opacity-80">{data.secondary}</div>
           )}
         </div>
       </div>
@@ -111,11 +85,7 @@ export function LiveActivityView({
   return (
     <Card className="px-4 py-3">
       <div className="flex items-center gap-3">
-        <span
-          className={`activity-icon activity-${data.type} text-3xl leading-none`}
-        >
-          {data.emoji}
-        </span>
+        <span className="text-3xl leading-none">{data.emoji}</span>
         <div className="min-w-0">
           <div className="text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
             {data.topLabel}

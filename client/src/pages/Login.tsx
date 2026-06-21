@@ -20,7 +20,7 @@ function Login() {
     setError("");
     try {
       await login(password);
-      navigate("/trips");
+      navigate("/mapa");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Chyba přihlášení");
     } finally {

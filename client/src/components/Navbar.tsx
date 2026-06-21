@@ -17,7 +17,7 @@ function Navbar() {
     <nav className="sticky top-0 z-40 border-b border-surface-border bg-surface text-surface-foreground">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
         <button
-          onClick={() => navigate("/trips")}
+          onClick={() => navigate("/mapa")}
           className="group flex items-center gap-2 rounded-lg px-1.5 py-1 outline-none transition-colors hover:text-brand focus-visible:ring-2 focus-visible:ring-ring/50"
         >
           <span className="flex size-7 items-center justify-center rounded-lg bg-badge text-badge-foreground transition-transform group-hover:rotate-12">

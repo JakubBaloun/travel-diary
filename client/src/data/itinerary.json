@@ -1,0 +1,160 @@
+{
+  "trip": {
+    "name": "USA Léto 2026",
+    "start": "2026-07-04",
+    "end": "2026-07-18",
+    "departure": "2026-07-04T07:20:00+02:00"
+  },
+  "cities": [
+    { "name": "Boston", "mapX": 760, "mapY": 290 },
+    { "name": "Burlington", "mapX": 540, "mapY": 150 },
+    { "name": "Portland", "mapX": 820, "mapY": 220 },
+    { "name": "New York", "mapX": 530, "mapY": 410 },
+    { "name": "Washington", "mapX": 270, "mapY": 530 }
+  ],
+  "days": [
+    {
+      "dayNumber": 1,
+      "date": "2026-07-04",
+      "place": "Boston, MA",
+      "title": "Přílet a Independence Day",
+      "emoji": "🎆",
+      "mapX": 758,
+      "mapY": 292
+    },
+    {
+      "dayNumber": 2,
+      "date": "2026-07-05",
+      "place": "Boston, MA",
+      "title": "Historie a Harvard",
+      "emoji": "🎓",
+      "mapX": 762,
+      "mapY": 288
+    },
+    {
+      "dayNumber": 3,
+      "date": "2026-07-06",
+      "place": "Boston → Burlington, VT",
+      "title": "Road trip do Vermontu",
+      "emoji": "🚗",
+      "mapX": 540,
+      "mapY": 150
+    },
+    {
+      "dayNumber": 4,
+      "date": "2026-07-07",
+      "place": "Mt. Washington, NH",
+      "title": "White Mountains a zubačka",
+      "emoji": "🏔️",
+      "mapX": 720,
+      "mapY": 170
+    },
+    {
+      "dayNumber": 5,
+      "date": "2026-07-08",
+      "place": "Portland, ME",
+      "title": "Maine, jezero a lobster roll",
+      "emoji": "🦞",
+      "mapX": 820,
+      "mapY": 220
+    },
+    {
+      "dayNumber": 6,
+      "date": "2026-07-09",
+      "place": "Yale a Milford, CT",
+      "title": "Pobřežím dolů přes Yale",
+      "emoji": "🎓",
+      "mapX": 590,
+      "mapY": 380
+    },
+    {
+      "dayNumber": 7,
+      "date": "2026-07-10",
+      "place": "New York City",
+      "title": "Příjezd do NYC",
+      "emoji": "🗽",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    },
+    {
+      "dayNumber": 8,
+      "date": "2026-07-11",
+      "place": "New York City",
+      "title": "Upper East Side a baseball",
+      "emoji": "⚾",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    },
+    {
+      "dayNumber": 9,
+      "date": "2026-07-12",
+      "place": "New York City",
+      "title": "West Side a Empire State",
+      "emoji": "🌃",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    },
+    {
+      "dayNumber": 10,
+      "date": "2026-07-13",
+      "place": "New York City",
+      "title": "Midtown klasika",
+      "emoji": "🏙️",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    },
+    {
+      "dayNumber": 11,
+      "date": "2026-07-14",
+      "place": "New York City",
+      "title": "Downtown a Lower Manhattan",
+      "emoji": "🏗️",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    },
+    {
+      "dayNumber": 12,
+      "date": "2026-07-15",
+      "place": "Washington, D.C.",
+      "title": "Jednodenní výlet do D.C.",
+      "emoji": "🇺🇸",
+      "mapX": 270,
+      "mapY": 530
+    },
+    {
+      "dayNumber": 13,
+      "date": "2026-07-16",
+      "place": "New York City",
+      "title": "Socha Svobody a West Village",
+      "emoji": "👠",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    },
+    {
+      "dayNumber": 14,
+      "date": "2026-07-17",
+      "place": "New York City",
+      "title": "Central Park a Brooklyn",
+      "emoji": "🌳",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    },
+    {
+      "dayNumber": 15,
+      "date": "2026-07-18",
+      "place": "New York City",
+      "title": "Poslední den a odlet",
+      "emoji": "✈️",
+      "mapX": 530,
+      "mapY": 410,
+      "hub": "nyc"
+    }
+  ]
+}

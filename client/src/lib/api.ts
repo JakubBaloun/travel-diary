@@ -5,7 +5,7 @@ const API_BASE = import.meta.env.VITE_API_BASE ?? "/api"
 type AuthMode = "reader" | "admin"
 
 interface ApiFetchOptions extends Omit<RequestInit, "body"> {
-  body?: BodyInit | Record<string, unknown> | null
+  body?: BodyInit | object | null
   auth?: AuthMode
 }
 
@@ -97,169 +97,113 @@ async function apiFetch<T>(path: string, options: ApiFetchOptions = {}): Promise
   return (await res.json()) as T
 }
 
-export interface TripData {
+export interface PhotoData {
   id: string
-  title: string
-  slug: string
-  coverPhotoUrl: string | null
-  startDate: string
-  endDate: string
+  dayNumber: number
+  url: string
+  urlMed: string
+  urlThumb: string
+  width: number
+  height: number
+  wide: boolean
+  sortOrder: number
+  caption: string | null
 }
 
-export interface EntryData {
-  id: string
-  dayId: string
-  type: "text" | "photo"
-  content: string | null
-  photoUrl: string | null
-  caption: string | null
-  sortOrder: number
+export interface DaySummary {
+  dayNumber: number
+  published: boolean
+  highlight: boolean
+  photoCount: number
+  /** Null for non-published days when fetched via the reader endpoint. */
+  heroThumbUrl: string | null
 }
 
 export interface DayData {
-  id: string
-  tripId: string
   dayNumber: number
-  date: string
-  title: string | null
-  summary: string | null
-  coverPhotoUrl: string | null
-  entries?: EntryData[]
+  story: string | null
+  published: boolean
+  highlight: boolean
+  heroPhotoId: string | null
+  photos: PhotoData[]
 }
 
-export interface DayWithEntries extends DayData {
-  entries: EntryData[]
+// --- Public (reader) ---
+
+export function fetchDaySummaries(): Promise<DaySummary[]> {
+  return apiFetch<DaySummary[]>(`/days/summary`)
 }
 
-export interface TripWithDays extends TripData {
-  description: string | null
-  days: DayData[]
+export function fetchDay(dayNumber: number): Promise<DayData> {
+  return apiFetch<DayData>(`/days/${dayNumber}`)
 }
 
-export function fetchDayBySlug(slug: string, dayNumber: number): Promise<DayWithEntries> {
-  return apiFetch<DayWithEntries>(`/trips/${slug}/days/${dayNumber}`)
+// --- Admin ---
+
+export function fetchAdminDaySummaries(): Promise<DaySummary[]> {
+  return apiFetch<DaySummary[]>(`/admin/days/summary`, { auth: "admin" })
 }
 
-export function fetchTripBySlug(slug: string): Promise<TripWithDays> {
-  return apiFetch<TripWithDays>(`/trips/${slug}`)
+export function fetchAdminDay(dayNumber: number): Promise<DayData> {
+  return apiFetch<DayData>(`/admin/days/${dayNumber}`, { auth: "admin" })
 }
 
-export function fetchTrips(): Promise<TripData[]> {
-  return apiFetch<TripData[]>(`/trips`)
+export interface UpdateDayContentPayload {
+  story?: string | null
+  published?: boolean
+  highlight?: boolean
+  heroPhotoId?: string | null
+  clearHeroPhoto?: boolean
 }
 
-export async function uploadPhoto(file: File): Promise<string> {
-  const formData = new FormData()
-  formData.append("photo", file)
-  const data = await apiFetch<{ url: string }>(`/admin/upload`, {
-    method: "POST",
-    body: formData,
-    auth: "admin",
-  })
-  return data.url
-}
-
-export function createTrip(data: {
-  title: string
-  slug: string
-  description?: string | null
-  coverPhotoUrl?: string | null
-  startDate: string
-  endDate: string
-}): Promise<TripData> {
-  return apiFetch<TripData>(`/admin/trips`, { method: "POST", body: data, auth: "admin" })
-}
-
-export function updateTrip(
-  id: string,
-  data: {
-    title: string
-    slug: string
-    description?: string | null
-    coverPhotoUrl?: string | null
-    startDate: string
-    endDate: string
-  },
-): Promise<TripData> {
-  return apiFetch<TripData>(`/admin/trips/${id}`, { method: "PATCH", body: data, auth: "admin" })
-}
-
-export function fetchTripById(id: string): Promise<TripWithDays> {
-  return apiFetch<TripWithDays>(`/admin/trips/${id}`, { auth: "admin" })
-}
-
-export function createDay(
-  tripId: string,
-  data: {
-    dayNumber: number
-    date: string
-    title?: string | null
-    summary?: string | null
-    coverPhotoUrl?: string | null
-  },
+export function updateDayContent(
+  dayNumber: number,
+  data: UpdateDayContentPayload,
 ): Promise<DayData> {
-  return apiFetch<DayData>(`/admin/trips/${tripId}/days`, {
-    method: "POST",
+  return apiFetch<DayData>(`/admin/days/${dayNumber}`, {
+    method: "PUT",
     body: data,
     auth: "admin",
   })
 }
 
-export function updateDay(
-  id: string,
-  data: {
-    dayNumber?: number
-    date?: string
-    title?: string | null
-    summary?: string | null
-    coverPhotoUrl?: string | null
-  },
-): Promise<DayData> {
-  return apiFetch<DayData>(`/admin/days/${id}`, { method: "PATCH", body: data, auth: "admin" })
-}
-
-export function deleteDay(id: string): Promise<void> {
-  return apiFetch<void>(`/admin/days/${id}`, { method: "DELETE", auth: "admin" })
-}
-
-export function createEntry(
-  dayId: string,
-  data: { type: "text"; content: string; caption?: string | null } | { type: "photo"; caption?: string | null },
-  file?: File,
-): Promise<EntryData> {
-  if (data.type === "photo" && file) {
-    const formData = new FormData()
-    formData.append("photo", file)
-    formData.append("type", "photo")
-    if (data.caption) formData.append("caption", data.caption)
-    return apiFetch<EntryData>(`/admin/days/${dayId}/entries`, {
-      method: "POST",
-      body: formData,
-      auth: "admin",
-    })
-  }
-  return apiFetch<EntryData>(`/admin/days/${dayId}/entries`, {
+export function uploadDayPhoto(
+  dayNumber: number,
+  file: File,
+  caption?: string,
+): Promise<PhotoData> {
+  const fd = new FormData()
+  fd.append("photo", file)
+  if (caption) fd.append("caption", caption)
+  return apiFetch<PhotoData>(`/admin/days/${dayNumber}/photos`, {
     method: "POST",
-    body: data,
+    body: fd,
     auth: "admin",
   })
 }
 
-export function updateEntry(
-  id: string,
-  data: { content?: string | null; caption?: string | null; sortOrder?: number },
-): Promise<EntryData> {
-  return apiFetch<EntryData>(`/admin/entries/${id}`, {
+export function reorderDayPhotos(dayNumber: number, order: string[]): Promise<void> {
+  return apiFetch<void>(`/admin/days/${dayNumber}/photos/order`, {
+    method: "PUT",
+    body: { order },
+    auth: "admin",
+  })
+}
+
+export interface UpdatePhotoPayload {
+  caption?: string | null
+  wide?: boolean
+  clearCaption?: boolean
+}
+
+export function updatePhoto(id: string, data: UpdatePhotoPayload): Promise<PhotoData> {
+  return apiFetch<PhotoData>(`/admin/photos/${id}`, {
     method: "PATCH",
     body: data,
     auth: "admin",
   })
 }
 
-export function deleteEntry(id: string): Promise<void> {
-  return apiFetch<void>(`/admin/entries/${id}`, { method: "DELETE", auth: "admin" })
-}
-
-export function deleteTrip(id: string): Promise<void> {
-  return apiFetch<void>(`/admin/trips/${id}`, { method: "DELETE", auth: "admin" })
+export function deletePhoto(id: string): Promise<void> {
+  return apiFetch<void>(`/admin/photos/${id}`, { method: "DELETE", auth: "admin" })
 }
