@@ -14,7 +14,7 @@ function Navbar() {
   }
 
   return (
-    <nav className="sticky top-0 z-40 border-b border-surface-border bg-surface text-surface-foreground">
+    <nav className="sticky top-0 z-40 border-b border-surface-border bg-surface pt-[env(safe-area-inset-top)] text-surface-foreground">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-3">
         <button
           onClick={() => navigate("/mapa")}

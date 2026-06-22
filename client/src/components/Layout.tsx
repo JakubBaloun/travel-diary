@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar"
 
 function Layout() {
   return (
-    <div className="min-h-dvh bg-page text-foreground">
+    <div className="min-h-dvh bg-page pb-[env(safe-area-inset-bottom)] text-foreground">
       <Navbar />
       <Outlet />
     </div>

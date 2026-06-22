@@ -1,0 +1,19 @@
+{
+  "name": "USA Léto 2026 — Travel Diary",
+  "short_name": "USA 2026",
+  "description": "Soukromý cestovní deník USA 2026",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1612",
+  "theme_color": "#1a1612",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -29,7 +29,7 @@ function Login() {
   }
 
   return (
-    <div className="relative flex min-h-dvh items-center justify-center bg-page p-4 text-foreground">
+    <div className="relative flex min-h-dvh items-center justify-center bg-page p-4 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(1rem,env(safe-area-inset-top))] text-foreground">
       <div className="absolute right-3 top-3">
         <ThemeSwitcher />
       </div>
