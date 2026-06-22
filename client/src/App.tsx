@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom"
 import Login from "@/pages/Login"
+import Mapa from "@/pages/Mapa"
 import Layout from "@/components/Layout"
 
 function App() {
@@ -7,7 +8,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Login />} />
       <Route element={<Layout />}>
-        <Route path="/mapa" element={<ComingSoon label="Mapa — přijde v PR 3" />} />
+        <Route path="/mapa" element={<Mapa />} />
         <Route path="/den/:dayNumber" element={<ComingSoon label="Den — přijde v PR 4" />} />
         <Route path="/admin" element={<ComingSoon label="Admin — přijde v PR 5" />} />
       </Route>
