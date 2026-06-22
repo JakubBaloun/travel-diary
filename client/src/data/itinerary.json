@@ -6,11 +6,11 @@
     "departure": "2026-07-04T07:20:00+02:00"
   },
   "cities": [
-    { "name": "Boston", "mapX": 517, "mapY": 436 },
-    { "name": "Burlington", "mapX": 433, "mapY": 353 },
-    { "name": "Portland", "mapX": 548, "mapY": 385 },
-    { "name": "New York", "mapX": 402, "mapY": 500 },
-    { "name": "Washington", "mapX": 283, "mapY": 571 }
+    { "name": "Boston", "mapX": 961, "mapY": 171 },
+    { "name": "Burlington", "mapX": 916, "mapY": 134 },
+    { "name": "Portland", "mapX": 966, "mapY": 139 },
+    { "name": "New York", "mapX": 923, "mapY": 218 },
+    { "name": "Washington", "mapX": 882, "mapY": 269 }
   ],
   "days": [
     {
@@ -19,8 +19,8 @@
       "place": "Boston, MA",
       "title": "Přílet a Independence Day",
       "emoji": "🎆",
-      "mapX": 517,
-      "mapY": 436,
+      "mapX": 961,
+      "mapY": 171,
       "hub": "boston"
     },
     {
@@ -29,8 +29,8 @@
       "place": "Boston, MA",
       "title": "Historie a Harvard",
       "emoji": "🎓",
-      "mapX": 517,
-      "mapY": 436,
+      "mapX": 961,
+      "mapY": 171,
       "hub": "boston"
     },
     {
@@ -39,8 +39,8 @@
       "place": "Boston → Burlington, VT",
       "title": "Road trip do Vermontu",
       "emoji": "🚗",
-      "mapX": 433,
-      "mapY": 353
+      "mapX": 916,
+      "mapY": 134
     },
     {
       "dayNumber": 4,
@@ -48,8 +48,8 @@
       "place": "Mt. Washington, NH",
       "title": "White Mountains a zubačka",
       "emoji": "🏔️",
-      "mapX": 507,
-      "mapY": 361
+      "mapX": 946,
+      "mapY": 130
     },
     {
       "dayNumber": 5,
@@ -57,8 +57,8 @@
       "place": "Portland, ME",
       "title": "Maine, jezero a lobster roll",
       "emoji": "🦞",
-      "mapX": 548,
-      "mapY": 385
+      "mapX": 966,
+      "mapY": 139
     },
     {
       "dayNumber": 6,
@@ -66,8 +66,8 @@
       "place": "Yale a Milford, CT",
       "title": "Pobřežím dolů přes Yale",
       "emoji": "🎓",
-      "mapX": 444,
-      "mapY": 477
+      "mapX": 937,
+      "mapY": 201
     },
     {
       "dayNumber": 7,
@@ -75,8 +75,8 @@
       "place": "New York City",
       "title": "Příjezd do NYC",
       "emoji": "🗽",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     },
     {
@@ -85,8 +85,8 @@
       "place": "New York City",
       "title": "Upper East Side a baseball",
       "emoji": "⚾",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     },
     {
@@ -95,8 +95,8 @@
       "place": "New York City",
       "title": "West Side a Empire State",
       "emoji": "🌃",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     },
     {
@@ -105,8 +105,8 @@
       "place": "New York City",
       "title": "Midtown klasika",
       "emoji": "🏙️",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     },
     {
@@ -115,8 +115,8 @@
       "place": "New York City",
       "title": "Downtown a Lower Manhattan",
       "emoji": "🏗️",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     },
     {
@@ -125,8 +125,8 @@
       "place": "Washington, D.C.",
       "title": "Jednodenní výlet do D.C.",
       "emoji": "🇺🇸",
-      "mapX": 283,
-      "mapY": 571
+      "mapX": 882,
+      "mapY": 269
     },
     {
       "dayNumber": 13,
@@ -134,8 +134,8 @@
       "place": "New York City",
       "title": "Socha Svobody a West Village",
       "emoji": "👠",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     },
     {
@@ -144,8 +144,8 @@
       "place": "New York City",
       "title": "Central Park a Brooklyn",
       "emoji": "🌳",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     },
     {
@@ -154,8 +154,8 @@
       "place": "New York City",
       "title": "Poslední den a odlet",
       "emoji": "✈️",
-      "mapX": 402,
-      "mapY": 500,
+      "mapX": 923,
+      "mapY": 218,
       "hub": "nyc"
     }
   ]
