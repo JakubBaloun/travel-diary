@@ -43,14 +43,13 @@ export function useSvgPanZoom({
       const maxW = base.w / minZoom
       const w = Math.min(Math.max(v.w, minW), maxW)
       const h = w * (base.h / base.w)
-      // keep at least ~30% of map visible inside the viewport
-      const minX = -w * 0.7
-      const maxX = base.w - w * 0.3
-      const minY = -h * 0.7
-      const maxY = base.h - h * 0.3
+      // Keep the visible viewport fully inside the map — no white-space drift.
+      // When the viewport equals the map (zoomed out fully) the only valid offset is (0, 0).
+      const maxX = Math.max(0, base.w - w)
+      const maxY = Math.max(0, base.h - h)
       return {
-        x: Math.min(Math.max(v.x, minX), maxX),
-        y: Math.min(Math.max(v.y, minY), maxY),
+        x: Math.min(Math.max(v.x, 0), maxX),
+        y: Math.min(Math.max(v.y, 0), maxY),
         w,
         h,
       }
