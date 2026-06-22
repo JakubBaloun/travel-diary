@@ -8,15 +8,7 @@ import {
   type ReactNode,
 } from "react"
 
-export const themes = [
-  "light",
-  "dark",
-  "sunset",
-  "ocean",
-  "forest",
-  "sepia",
-  "midnight",
-] as const
+export const themes = ["light", "dark", "sunset", "sepia"] as const
 
 export type Theme = (typeof themes)[number]
 
@@ -30,17 +22,14 @@ export interface ThemeMeta {
 }
 
 export const themeMeta: Record<Theme, ThemeMeta> = {
-  light:    { label: "Light",    mode: "light", swatch: ["oklch(0.985 0.003 240)", "oklch(0.52 0.16 250)"] },
-  dark:     { label: "Dark",     mode: "dark",  swatch: ["oklch(0.18 0.01 250)",   "oklch(0.72 0.13 245)"] },
-  sunset:   { label: "Sunset",   mode: "dark",  swatch: ["oklch(0.22 0.05 30)",    "oklch(0.78 0.16 55)"]  },
-  ocean:    { label: "Ocean",    mode: "dark",  swatch: ["oklch(0.19 0.05 230)",   "oklch(0.76 0.13 195)"] },
-  forest:   { label: "Forest",   mode: "dark",  swatch: ["oklch(0.2 0.04 150)",    "oklch(0.74 0.13 140)"] },
-  sepia:    { label: "Sepia",    mode: "light", swatch: ["oklch(0.975 0.012 75)",  "oklch(0.5 0.09 55)"]   },
-  midnight: { label: "Midnight", mode: "dark",  swatch: ["oklch(0.16 0.06 285)",   "oklch(0.76 0.16 300)"] },
+  light:  { label: "Light",  mode: "light", swatch: ["oklch(0.985 0.003 240)", "oklch(0.52 0.16 250)"] },
+  dark:   { label: "Dark",   mode: "dark",  swatch: ["oklch(0.18 0.01 250)",   "oklch(0.72 0.13 245)"] },
+  sunset: { label: "Sunset", mode: "dark",  swatch: ["oklch(0.22 0.05 30)",    "oklch(0.78 0.16 55)"]  },
+  sepia:  { label: "Sepia",  mode: "light", swatch: ["oklch(0.975 0.012 75)",  "oklch(0.5 0.09 55)"]   },
 }
 
 export const STORAGE_KEY = "travel-diary-theme"
-const DEFAULT_THEME: Theme = "sepia"
+const DEFAULT_THEME: Theme = "dark"
 
 function isTheme(value: unknown): value is Theme {
   return typeof value === "string" && (themes as readonly string[]).includes(value)
