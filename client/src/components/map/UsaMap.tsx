@@ -1,50 +1,104 @@
-import { useMemo, useRef } from "react"
-import { Minus, Plus, RotateCcw } from "lucide-react"
+import { useMemo, useRef } from "react";
+import { Minus, Plus, RotateCcw } from "lucide-react";
 import {
   days,
   derivePinState,
-  getCurrentDayNumber,
   getHubDays,
   getHubLabel,
-  getPhase,
   type ItineraryDay,
   type PinState,
-} from "@/data/itinerary"
-import { MAP_VIEWBOX, STATE_PATHS } from "@/data/state-paths"
-import { type DaySummary } from "@/lib/api"
-import { useSvgPanZoom } from "./useSvgPanZoom"
+} from "@/data/itinerary";
+import { STATE_PATHS, USA_BG_PATH } from "@/data/state-paths";
+import { type DaySummary } from "@/lib/api";
+import { useSvgPanZoom } from "./useSvgPanZoom";
 
 interface Props {
-  summaries: Map<number, DaySummary>
-  onPinClick: (dayNumber: number) => void
-  onHubClick: (hub: string) => void
+  summaries: Map<number, DaySummary>;
+  onPinClick: (dayNumber: number) => void;
+  onHubClick: (hub: string) => void;
 }
 
-// Warm watercolor wash per state — desaturated, slightly varied so the palette feels
-// hand-painted rather than algorithmic.
 const STATE_FILL: Record<string, string> = {
-  "23": "oklch(0.93 0.04 80)",
-  "33": "oklch(0.91 0.05 50)",
-  "50": "oklch(0.93 0.05 140)",
-  "25": "oklch(0.91 0.05 30)",
-  "09": "oklch(0.92 0.04 220)",
-  "44": "oklch(0.93 0.04 280)",
-  "36": "oklch(0.92 0.05 100)",
-  "34": "oklch(0.92 0.04 250)",
-  "42": "oklch(0.92 0.04 350)",
-  "24": "oklch(0.93 0.05 60)",
-  "11": "oklch(0.88 0.06 350)",
-  "51": "oklch(0.93 0.05 160)",
-}
+  "23": "oklch(0.96 0.025 80)",
+  "33": "oklch(0.95 0.03 50)",
+  "50": "oklch(0.96 0.03 140)",
+  "25": "oklch(0.95 0.03 30)",
+  "09": "oklch(0.96 0.025 220)",
+  "44": "oklch(0.96 0.025 280)",
+  "36": "oklch(0.96 0.03 100)",
+  "34": "oklch(0.96 0.025 250)",
+  "42": "oklch(0.96 0.025 350)",
+  "10": "oklch(0.96 0.03 190)",
+  "24": "oklch(0.96 0.03 60)",
+  "11": "oklch(0.93 0.035 350)",
+  "51": "oklch(0.96 0.03 160)",
+};
 
-const INK = "oklch(0.32 0.06 50)"
-const INK_SOFT = "oklch(0.42 0.05 50)"
-const PAPER = "oklch(0.96 0.02 80)"
-const OCEAN = "oklch(0.92 0.025 215)"
+const INK = "oklch(0.32 0.06 50)";
+const PAPER = "oklch(0.96 0.02 80)";
+const OCEAN = "oklch(0.92 0.025 215)";
+const ROUTE = "oklch(0.5 0.2 25)";
+const PIN_PAPER = "oklch(0.985 0.005 70)";
+const USA_BG_FILL = "oklch(0.9 0.012 75)";
 
-function buildPolyline(pts: ItineraryDay[]): string {
-  if (pts.length < 2) return ""
-  return "M " + pts.map((p) => `${p.mapX} ${p.mapY}`).join(" L ")
+const VIEW = { x: 692, y: -35, w: 400, h: 460 } as const;
+
+// Vygeneruje zvlněný segment pouze mezi dvěma konkrétními body
+function buildSmoothSegment(
+  p1: ItineraryDay,
+  p2: ItineraryDay,
+  index: number,
+): string {
+  if (p1.mapX === p2.mapX && p1.mapY === p2.mapY) return "";
+
+  function jitter(i: number, k: number): number {
+    const s = Math.sin(i * 12.9898 + k * 78.233) * 43758.5453;
+    return s - Math.floor(s);
+  }
+
+  const SUBDIVISIONS = 4;
+  const AMPLITUDE = 0.06;
+
+  const dx = p2.mapX - p1.mapX;
+  const dy = p2.mapY - p1.mapY;
+  const len = Math.hypot(dx, dy);
+
+  if (len < 20) {
+    return `M ${p1.mapX} ${p1.mapY} L ${p2.mapX} ${p2.mapY}`;
+  }
+
+  // TADY JE TA OPRAVA: p1 správně převádíme na formát { x, y }
+  const expanded: { x: number; y: number }[] = [{ x: p1.mapX, y: p1.mapY }];
+  const nx = -dy / len;
+  const ny = dx / len;
+
+  for (let k = 1; k <= SUBDIVISIONS; k++) {
+    const t = k / (SUBDIVISIONS + 1);
+    const sign = k % 2 === 0 ? 1 : -1;
+    const mag = 0.5 + jitter(index, k) * 0.5;
+    const offset = AMPLITUDE * len * sign * mag;
+    expanded.push({
+      x: p1.mapX + dx * t + nx * offset,
+      y: p1.mapY + dy * t + ny * offset,
+    });
+  }
+  // A tady na konci tlačíme p2 také jako správný objekt s x a y
+  expanded.push({ x: p2.mapX, y: p2.mapY });
+
+  const tension = 0.7;
+  let d = `M ${expanded[0].x} ${expanded[0].y}`;
+  for (let i = 0; i < expanded.length - 1; i++) {
+    const p0 = expanded[i - 1] ?? expanded[i];
+    const pt1 = expanded[i];
+    const pt2 = expanded[i + 1];
+    const p3 = expanded[i + 2] ?? pt2;
+    const c1x = pt1.x + ((pt2.x - p0.x) * tension) / 3;
+    const c1y = pt1.y + ((pt2.y - p0.y) * tension) / 3;
+    const c2x = pt2.x - ((p3.x - pt1.x) * tension) / 3;
+    const c2y = pt2.y - ((p3.y - pt1.y) * tension) / 3;
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${pt2.x.toFixed(1)} ${pt2.y.toFixed(1)}`;
+  }
+  return d;
 }
 
 function aggregateHubState(
@@ -54,86 +108,122 @@ function aggregateHubState(
 ): PinState {
   const states = hd.map((d) =>
     derivePinState(d, summaries.get(d.dayNumber)?.published ?? false, now),
-  )
-  if (states.includes("current")) return "current"
-  if (states.includes("done") && states.includes("upcoming")) return "current"
-  if (states.every((s) => s === "done")) return "done"
-  return "upcoming"
+  );
+  if (states.includes("current")) return "current";
+  if (states.includes("done") && states.includes("upcoming")) return "current";
+  if (states.every((s) => s === "done")) return "done";
+  return "upcoming";
 }
 
+const PIN_INTERVAL_MS = 1000;
+const PIN_FADE_MS = 350;
+
 interface RenderedPin {
-  kind: "single" | "hub"
-  day: ItineraryDay
-  hubDays?: ItineraryDay[]
-  state: PinState
-  highlight: boolean
+  kind: "single" | "hub";
+  day: ItineraryDay;
+  hubDays?: ItineraryDay[];
+  state: PinState;
+  highlight: boolean;
+}
+
+interface RouteSegment {
+  d: string;
+  delay: number;
 }
 
 function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
-  const now = useMemo(() => new Date(), [])
-  const phase = getPhase(now)
-  const currentN = getCurrentDayNumber(now)
+  const now = useMemo(() => new Date(), []);
 
-  const svgRef = useRef<SVGSVGElement>(null)
+  const svgRef = useRef<SVGSVGElement>(null);
   const zoom = useSvgPanZoom({
     svgRef,
-    base: { x: 0, y: 0, w: MAP_VIEWBOX.w, h: MAP_VIEWBOX.h },
+    base: { x: VIEW.x, y: VIEW.y, w: VIEW.w, h: VIEW.h },
     maxZoom: 8,
-  })
+    initialZoom: 1.5,
+  });
 
-  const pins: RenderedPin[] = useMemo(() => {
-    const seen = new Set<string>()
-    const out: RenderedPin[] = []
-    for (const d of days) {
+  const publishedDays = useMemo(
+    () => days.filter((d) => summaries.get(d.dayNumber)?.published),
+    [summaries],
+  );
+
+  // Společný výpočet špendlíků i rozkouskované trasy
+  const { pins, pinDelays, segments } = useMemo(() => {
+    const seenHubs = new Set<string>();
+    const pinsOut: RenderedPin[] = [];
+    const delays: number[] = [];
+    const segmentsOut: RouteSegment[] = [];
+
+    let pinCount = 0;
+    let prevDay: ItineraryDay | null = null;
+
+    for (const d of publishedDays) {
+      let isNewPin = false;
+
       if (d.hub) {
-        if (seen.has(d.hub)) continue
-        seen.add(d.hub)
-        const hd = getHubDays(d.hub)
-        out.push({
-          kind: "hub",
-          day: d,
-          hubDays: hd,
-          state: aggregateHubState(hd, summaries, now),
-          highlight: hd.some((x) => summaries.get(x.dayNumber)?.highlight),
-        })
+        if (!seenHubs.has(d.hub)) {
+          seenHubs.add(d.hub);
+          const hd = getHubDays(d.hub);
+          pinsOut.push({
+            kind: "hub",
+            day: d,
+            hubDays: hd,
+            state: aggregateHubState(hd, summaries, now),
+            highlight: hd.some((x) => summaries.get(x.dayNumber)?.highlight),
+          });
+          isNewPin = true;
+        }
       } else {
-        const s = summaries.get(d.dayNumber)
-        out.push({
+        const s = summaries.get(d.dayNumber);
+        pinsOut.push({
           kind: "single",
           day: d,
           state: derivePinState(d, s?.published ?? false, now),
           highlight: s?.highlight ?? false,
-        })
+        });
+        isNewPin = true;
+      }
+
+      if (isNewPin) {
+        const currentDelay = pinCount * PIN_INTERVAL_MS;
+        delays.push(currentDelay);
+
+        // Pokud máme předchozí špendlík, vytvoříme samostatnou čáru mezi ním a současným
+        if (prevDay) {
+          const pathD = buildSmoothSegment(prevDay, d, pinCount);
+          if (pathD) {
+            segmentsOut.push({
+              d: pathD,
+              // Čára se začne kreslit v momentě, kdy se objevil předchozí špendlík
+              delay: (pinCount - 1) * PIN_INTERVAL_MS,
+            });
+          }
+        }
+
+        /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+        prevDay = d;
+        pinCount++;
       }
     }
-    return out
-  }, [summaries, now])
 
-  const splitIdx = useMemo(() => {
-    if (phase === "before") return 0
-    if (phase === "after") return days.length - 1
-    if (currentN == null) return 0
-    return days.findIndex((d) => d.dayNumber === currentN)
-  }, [phase, currentN])
+    return {
+      pins: pinsOut,
+      pinDelays: delays,
+      segments: segmentsOut,
+    };
+  }, [publishedDays, summaries, now]);
 
-  const solidPath = useMemo(() => buildPolyline(days.slice(0, splitIdx + 1)), [splitIdx])
-  const dashedPath = useMemo(
-    () => buildPolyline(days.slice(Math.max(0, splitIdx))),
-    [splitIdx],
-  )
-
-  // Swallow pin click if the gesture was a pan rather than a tap.
   function handlePinClick(dayNumber: number) {
-    if (zoom.didMove()) return
-    onPinClick(dayNumber)
+    if (zoom.didMove()) return;
+    onPinClick(dayNumber);
   }
   function handleHubClick(hub: string) {
-    if (zoom.didMove()) return
-    onHubClick(hub)
+    if (zoom.didMove()) return;
+    onHubClick(hub);
   }
 
   return (
-    <div className="relative">
+    <div className="relative lg:mx-auto lg:max-w-[520px]">
       <svg
         ref={svgRef}
         viewBox={zoom.viewBox}
@@ -145,16 +235,31 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
       >
         <defs>
           <filter id="ink-jitter" x="-2%" y="-2%" width="104%" height="104%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" />
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.9"
+              numOctaves="2"
+              seed="7"
+            />
             <feDisplacementMap in="SourceGraphic" scale="0.9" />
           </filter>
           <filter id="wash" x="-3%" y="-3%" width="106%" height="106%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="11" />
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.02"
+              numOctaves="3"
+              seed="11"
+            />
             <feDisplacementMap in="SourceGraphic" scale="4" />
             <feGaussianBlur stdDeviation="0.4" />
           </filter>
           <filter id="paper-grain" x="0" y="0" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="2" />
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.85"
+              numOctaves="2"
+              seed="2"
+            />
             <feColorMatrix
               type="matrix"
               values="0 0 0 0 0.30   0 0 0 0 0.22   0 0 0 0 0.12   0 0 0 0.10 0"
@@ -163,34 +268,53 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
           </filter>
           <radialGradient id="paper-glow" cx="50%" cy="35%" r="80%">
             <stop offset="0%" stopColor={PAPER} stopOpacity="1" />
-            <stop offset="100%" stopColor="oklch(0.91 0.03 70)" stopOpacity="1" />
+            <stop
+              offset="100%"
+              stopColor="oklch(0.91 0.03 70)"
+              stopOpacity="1"
+            />
           </radialGradient>
         </defs>
 
         <rect
-          x={0}
-          y={0}
-          width={MAP_VIEWBOX.w}
-          height={MAP_VIEWBOX.h}
+          x={VIEW.x}
+          y={VIEW.y}
+          width={VIEW.w}
+          height={VIEW.h}
           fill="url(#paper-glow)"
         />
         <rect
-          x={0}
-          y={0}
-          width={MAP_VIEWBOX.w}
-          height={MAP_VIEWBOX.h}
+          x={VIEW.x}
+          y={VIEW.y}
+          width={VIEW.w}
+          height={VIEW.h}
           fill={OCEAN}
           opacity="0.55"
         />
         <rect
-          x={0}
-          y={0}
-          width={MAP_VIEWBOX.w}
-          height={MAP_VIEWBOX.h}
+          x={VIEW.x}
+          y={VIEW.y}
+          width={VIEW.w}
+          height={VIEW.h}
           fill="black"
           opacity="0.04"
           filter="url(#paper-grain)"
         />
+
+        <g filter="url(#wash)">
+          <path d={USA_BG_PATH} fill={USA_BG_FILL} opacity={0.95} />
+        </g>
+        <g filter="url(#ink-jitter)">
+          <path
+            d={USA_BG_PATH}
+            fill="none"
+            stroke={INK}
+            strokeWidth={0.9}
+            strokeLinejoin="round"
+            strokeLinecap="round"
+            opacity={0.45}
+          />
+        </g>
 
         <g filter="url(#wash)">
           {STATE_PATHS.map((s) => (
@@ -198,94 +322,93 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
               key={`fill-${s.id}`}
               d={s.d}
               fill={STATE_FILL[s.id] ?? "oklch(0.92 0.02 80)"}
-              opacity={0.85}
+              opacity={0.95}
             />
           ))}
         </g>
 
-        <g filter="url(#ink-jitter)" fill="none" strokeLinejoin="round" strokeLinecap="round">
+        <g
+          filter="url(#ink-jitter)"
+          fill="none"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        >
           {STATE_PATHS.map((s) => (
             <path
               key={`stroke-${s.id}`}
               d={s.d}
               stroke={INK}
-              strokeWidth={1.2}
-              opacity={0.85}
+              strokeWidth={0.9}
+              opacity={0.7}
             />
           ))}
         </g>
 
-        <g style={{ fontFamily: '"Caveat Variable", cursive' }}>
-          {STATE_PATHS.map((s) => (
-            <text
-              key={`label-${s.id}`}
-              x={s.label_x}
-              y={s.label_y}
-              textAnchor="middle"
-              fontSize={s.label === "D.C." || s.label === "R.I." ? 14 : 22}
-              fontWeight={500}
-              opacity={0.5}
-              fill={INK}
-              style={{ pointerEvents: "none" }}
+        {/* Vykreslení jednotlivých segmentů cesty. Každý se kreslí přesně 1 vteřinu. */}
+        {segments.map((seg, idx) => (
+          <path
+            key={`seg-${idx}`}
+            d={seg.d}
+            fill="none"
+            stroke={ROUTE}
+            strokeWidth={1.6}
+            strokeLinecap="round"
+            opacity={0.95}
+            pathLength={1}
+            style={{
+              strokeDasharray: 1,
+              strokeDashoffset: 1,
+              animation: `map-route-draw ${PIN_INTERVAL_MS}ms linear ${seg.delay}ms forwards`,
+            }}
+          />
+        ))}
+
+        {pins.map((pin, i) => {
+          const key =
+            pin.kind === "hub"
+              ? `hub-${pin.day.hub}`
+              : `day-${pin.day.dayNumber}`;
+          const delay = pinDelays[i];
+          return (
+            <g
+              key={key}
+              style={{
+                animation: `map-pin-fade-in ${PIN_FADE_MS}ms ease-out ${delay}ms both`,
+              }}
             >
-              {s.label}
-            </text>
-          ))}
-        </g>
-
-        {dashedPath && (
-          <path
-            d={dashedPath}
-            fill="none"
-            stroke={INK_SOFT}
-            strokeWidth={1.5}
-            strokeDasharray="4 5"
-            strokeLinecap="round"
-            opacity={0.55}
-          />
-        )}
-        {solidPath && (
-          <path
-            d={solidPath}
-            fill="none"
-            stroke="var(--brand)"
-            strokeWidth={2.5}
-            strokeLinecap="round"
-            opacity={0.8}
-          />
-        )}
-
-        {pins.map((pin) =>
-          pin.kind === "hub" ? (
-            <HubPin
-              key={pin.day.hub}
-              pin={pin}
-              onClick={() => handleHubClick(pin.day.hub!)}
-            />
-          ) : (
-            <SinglePin
-              key={pin.day.dayNumber}
-              pin={pin}
-              onClick={() => handlePinClick(pin.day.dayNumber)}
-            />
-          ),
-        )}
+              {pin.kind === "hub" ? (
+                <HubPin
+                  pin={pin}
+                  onClick={() => handleHubClick(pin.day.hub!)}
+                />
+              ) : (
+                <SinglePin
+                  pin={pin}
+                  onClick={() => handlePinClick(pin.day.dayNumber)}
+                />
+              )}
+            </g>
+          );
+        })}
       </svg>
 
-      {/* Zoom controls overlay */}
-      <div className="absolute bottom-3 right-3 flex flex-col gap-1.5 rounded-xl bg-surface/90 p-1 shadow-md ring-1 ring-surface-border backdrop-blur">
+      <div className="absolute bottom-2 right-2 flex items-center gap-0.5 rounded-full bg-surface/90 p-0.5 shadow-md ring-1 ring-surface-border backdrop-blur sm:bottom-3 sm:right-3 sm:gap-1 sm:p-1">
         <ZoomBtn label="Přiblížit" onClick={zoom.zoomIn}>
-          <Plus className="size-4" />
+          <Plus className="size-3.5 sm:size-4" />
         </ZoomBtn>
-        <ZoomBtn label="Oddálit" onClick={zoom.zoomOut} disabled={!zoom.isZoomed}>
-          <Minus className="size-4" />
+        <ZoomBtn
+          label="Oddálit"
+          onClick={zoom.zoomOut}
+          disabled={!zoom.isZoomed}
+        >
+          <Minus className="size-3.5 sm:size-4" />
         </ZoomBtn>
         <ZoomBtn label="Reset" onClick={zoom.reset} disabled={!zoom.isZoomed}>
-          <RotateCcw className="size-4" />
+          <RotateCcw className="size-3.5 sm:size-4" />
         </ZoomBtn>
       </div>
     </div>
-  )
+  );
 }
 
 function ZoomBtn({
@@ -294,10 +417,10 @@ function ZoomBtn({
   onClick,
   disabled,
 }: {
-  children: React.ReactNode
-  label: string
-  onClick: () => void
-  disabled?: boolean
+  children: React.ReactNode;
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
 }) {
   return (
     <button
@@ -306,17 +429,24 @@ function ZoomBtn({
       disabled={disabled}
       aria-label={label}
       title={label}
-      className="flex size-9 items-center justify-center rounded-lg text-foreground/80 hover:bg-muted hover:text-foreground disabled:opacity-30"
+      className="flex size-7 items-center justify-center rounded-full text-foreground/80 hover:bg-muted hover:text-foreground disabled:opacity-30 sm:size-9 sm:rounded-lg"
     >
       {children}
     </button>
-  )
+  );
 }
 
-function SinglePin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
-  const { day, state, highlight } = pin
-  const radius = highlight ? 11 : 9
-  const isUpcoming = state === "upcoming"
+function SinglePin({
+  pin,
+  onClick,
+}: {
+  pin: RenderedPin;
+  onClick: () => void;
+}) {
+  const { day, state, highlight } = pin;
+  const radius = highlight ? 7 : 6;
+  const isUpcoming = state === "upcoming";
+  const isDone = state === "done";
 
   return (
     <g
@@ -330,7 +460,7 @@ function SinglePin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) 
           cy={day.mapY}
           r={radius + 7}
           fill="none"
-          stroke="var(--brand)"
+          stroke={ROUTE}
           strokeWidth={1.5}
           opacity={0.55}
           className="animate-ping"
@@ -340,31 +470,35 @@ function SinglePin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) 
         cx={day.mapX}
         cy={day.mapY}
         r={radius}
-        fill={isUpcoming ? PAPER : "var(--brand)"}
-        stroke={INK}
+        fill={isDone ? ROUTE : PIN_PAPER}
+        stroke={ROUTE}
         strokeWidth={1.2}
+        strokeOpacity={0.95}
       />
       <text
         x={day.mapX}
         y={day.mapY + 0.5}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={10}
+        fontSize={7.5}
         fontWeight={700}
-        fill={isUpcoming ? INK : "var(--brand-foreground)"}
-        style={{ pointerEvents: "none", fontFamily: '"Caveat Variable", cursive' }}
+        fill={isDone ? "oklch(0.98 0.005 70)" : ROUTE}
+        style={{
+          pointerEvents: "none",
+          fontFamily: '"Caveat Variable", cursive',
+        }}
       >
         {day.dayNumber}
       </text>
     </g>
-  )
+  );
 }
 
 function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
-  const { day, hubDays = [], state, highlight } = pin
-  const radius = highlight ? 20 : 17
-  const isUpcoming = state === "upcoming"
-  const label = getHubLabel(day.hub!)
+  const { day, hubDays = [], state, highlight } = pin;
+  const radius = highlight ? 9 : 8;
+  const isDone = state === "done";
+  const label = getHubLabel(day.hub!);
 
   return (
     <g
@@ -378,7 +512,7 @@ function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
           cy={day.mapY}
           r={radius + 7}
           fill="none"
-          stroke="var(--brand)"
+          stroke={ROUTE}
           strokeWidth={1.5}
           opacity={0.55}
           className="animate-ping"
@@ -388,24 +522,28 @@ function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
         cx={day.mapX}
         cy={day.mapY}
         r={radius}
-        fill={isUpcoming ? PAPER : "var(--brand)"}
-        stroke={INK}
+        fill={isDone ? ROUTE : PIN_PAPER}
+        stroke={ROUTE}
         strokeWidth={1.3}
+        strokeOpacity={0.95}
       />
       <text
         x={day.mapX}
-        y={day.mapY + 1}
+        y={day.mapY + 0.8}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={14}
+        fontSize={7.5}
         fontWeight={700}
-        fill={isUpcoming ? INK : "var(--brand-foreground)"}
-        style={{ pointerEvents: "none", fontFamily: '"Caveat Variable", cursive' }}
+        fill={isDone ? "oklch(0.98 0.005 70)" : ROUTE}
+        style={{
+          pointerEvents: "none",
+          fontFamily: '"Caveat Variable", cursive',
+        }}
       >
         {label}
       </text>
     </g>
-  )
+  );
 }
 
-export default UsaMap
+export default UsaMap;

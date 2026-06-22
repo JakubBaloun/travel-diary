@@ -26,11 +26,11 @@ function HubModal({ hub, summaries, onSelect, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-3 backdrop-blur-sm sm:p-4"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-t-2xl border border-surface-border bg-surface text-surface-foreground shadow-2xl sm:rounded-2xl"
+        className="w-full max-w-md rounded-2xl border border-surface-border bg-surface text-surface-foreground shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <header className="flex items-center justify-between border-b border-surface-border px-5 py-3">
