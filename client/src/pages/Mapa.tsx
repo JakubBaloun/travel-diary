@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { Navigate, useNavigate } from "react-router-dom"
 import { isAuthenticated } from "@/lib/auth"
 import { fetchDaySummaries, type DaySummary } from "@/lib/api"
-import { LiveActivity } from "@/components/trips/LiveActivity"
 import UsaMap from "@/components/map/UsaMap"
 import HubModal from "@/components/map/HubModal"
 
@@ -32,18 +31,11 @@ function Mapa() {
 
   return (
     <div className="mx-auto max-w-5xl px-3 pb-10 pt-4 sm:px-6 sm:pt-8">
-      <div className="relative">
-        <UsaMap
-          summaries={summaries}
-          onPinClick={handlePinClick}
-          onHubClick={setOpenHub}
-        />
-        <div className="pointer-events-none absolute right-3 top-3 z-10 sm:right-6 sm:top-6">
-          <div className="pointer-events-auto">
-            <LiveActivity variant="chip" />
-          </div>
-        </div>
-      </div>
+      <UsaMap
+        summaries={summaries}
+        onPinClick={handlePinClick}
+        onHubClick={setOpenHub}
+      />
       {error && <p className="mt-3 text-center text-sm text-destructive">{error}</p>}
       {openHub && (
         <HubModal
