@@ -1,6 +1,6 @@
 const READER_TOKEN_KEY = "auth_token"
 const ADMIN_TOKEN_KEY = "admin_token"
-const API_BASE = "http://localhost:8080/api"
+const API_BASE = import.meta.env.VITE_API_BASE ?? "/api"
 
 export function getReaderToken(): string | null {
   return localStorage.getItem(READER_TOKEN_KEY)

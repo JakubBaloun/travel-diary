@@ -4,13 +4,13 @@ quarkus:
     root-path: /
     cors:
       enabled: true
-      origins: ${CORS_ORIGIN:http://localhost:5173}
+      origins: "*"
       methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
       headers: Content-Type,Authorization
       exposed-headers: Content-Type,Authorization
     access-log:
       enabled: true
-      pattern: "%h %l %t \"%r\" %s %b %D ms"
+      pattern: '%h %l %t "%r" %s %b %D ms'
 
   datasource:
     db-kind: postgresql
