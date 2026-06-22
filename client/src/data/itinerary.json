@@ -19,8 +19,9 @@
       "place": "Boston, MA",
       "title": "Přílet a Independence Day",
       "emoji": "🎆",
-      "mapX": 515,
-      "mapY": 434
+      "mapX": 517,
+      "mapY": 436,
+      "hub": "boston"
     },
     {
       "dayNumber": 2,
@@ -28,8 +29,9 @@
       "place": "Boston, MA",
       "title": "Historie a Harvard",
       "emoji": "🎓",
-      "mapX": 519,
-      "mapY": 438
+      "mapX": 517,
+      "mapY": 436,
+      "hub": "boston"
     },
     {
       "dayNumber": 3,

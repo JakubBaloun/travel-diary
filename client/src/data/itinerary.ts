@@ -85,3 +85,13 @@ export function derivePinState(
 export function getHubDays(hub: string): ItineraryDay[] {
   return days.filter((d) => d.hub === hub)
 }
+
+/** Short label shown on the map's hub pin. Falls back to the first 3 chars uppercased. */
+const HUB_LABELS: Record<string, string> = {
+  nyc: "NYC",
+  boston: "BOS",
+}
+
+export function getHubLabel(hub: string): string {
+  return HUB_LABELS[hub] ?? hub.slice(0, 3).toUpperCase()
+}
