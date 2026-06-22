@@ -3,7 +3,11 @@ import { Palette, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useTheme, type Theme } from "@/lib/theme"
 
-function ThemeSwitcher() {
+interface Props {
+  triggerClassName?: string
+}
+
+function ThemeSwitcher({ triggerClassName }: Props = {}) {
   const { theme, setTheme, themes, meta } = useTheme()
 
   return (
@@ -15,6 +19,7 @@ function ThemeSwitcher() {
             size="icon-sm"
             aria-label="Změnit téma"
             title="Téma"
+            className={triggerClassName}
           >
             <Palette />
           </Button>
