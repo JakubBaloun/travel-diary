@@ -397,26 +397,13 @@ function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
         y={day.mapY + 1}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={13}
+        fontSize={14}
         fontWeight={700}
         fill={isUpcoming ? INK : "var(--brand-foreground)"}
         style={{ pointerEvents: "none", fontFamily: '"Caveat Variable", cursive' }}
       >
         {label}
       </text>
-      <g transform={`translate(${day.mapX + radius - 4} ${day.mapY - radius + 4})`}>
-        <circle r={8} fill={PAPER} stroke={INK} strokeWidth={1} />
-        <text
-          textAnchor="middle"
-          dominantBaseline="central"
-          fontSize={11}
-          fontWeight={700}
-          fill={INK}
-          style={{ pointerEvents: "none", fontFamily: '"Caveat Variable", cursive' }}
-        >
-          {hubDays.length}
-        </text>
-      </g>
     </g>
   )
 }
