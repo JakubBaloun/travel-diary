@@ -1,10 +1,10 @@
 quarkus:
   http:
-    port: 8080
+    port: ${PORT:8080}
     root-path: /
     cors:
       enabled: true
-      origins: "*"
+      origins: ${CORS_ORIGIN:http://localhost:5173}
       methods: GET,POST,PUT,DELETE,PATCH,OPTIONS
       headers: Content-Type,Authorization
       exposed-headers: Content-Type,Authorization
@@ -41,5 +41,3 @@ app:
     secret-access-key: ${B2_SECRET_ACCESS_KEY}
     bucket-name: ${B2_BUCKET_NAME}
     public-url: ${B2_PUBLIC_URL}
-  cors:
-    origin: ${CORS_ORIGIN:http://localhost:5173}
