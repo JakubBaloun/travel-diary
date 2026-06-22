@@ -1,6 +1,5 @@
 import { useMemo } from "react"
 import {
-  cities,
   days,
   derivePinState,
   getCurrentDayNumber,
@@ -9,6 +8,7 @@ import {
   type ItineraryDay,
   type PinState,
 } from "@/data/itinerary"
+import { MAP_VIEWBOX, STATE_PATHS } from "@/data/state-paths"
 import { type DaySummary } from "@/lib/api"
 
 interface Props {
@@ -17,35 +17,36 @@ interface Props {
   onHubClick: (hub: string) => void
 }
 
-// Subtle background state labels. Coordinates are approximate centers in the viewBox.
-const STATE_LABELS: { name: string; x: number; y: number }[] = [
-  { name: "MAINE",    x: 880, y: 130 },
-  { name: "VERMONT",  x: 530, y:  95 },
-  { name: "N.H.",     x: 700, y: 115 },
-  { name: "MASS.",    x: 670, y: 290 },
-  { name: "CONN.",    x: 600, y: 355 },
-  { name: "NEW YORK", x: 430, y: 250 },
-  { name: "N.J.",     x: 470, y: 440 },
-  { name: "PENN.",    x: 320, y: 380 },
-  { name: "MARYLAND", x: 230, y: 490 },
-  { name: "VIRGINIA", x: 180, y: 560 },
-]
+// Warm watercolor wash per state — desaturated, slightly varied so the palette feels
+// hand-painted rather than algorithmic.
+const STATE_FILL: Record<string, string> = {
+  "23": "oklch(0.93 0.04 80)",  // Maine — cream
+  "33": "oklch(0.91 0.05 50)",  // New Hampshire — peach
+  "50": "oklch(0.93 0.05 140)", // Vermont — sage
+  "25": "oklch(0.91 0.05 30)",  // Massachusetts — coral
+  "09": "oklch(0.92 0.04 220)", // Connecticut — pale blue
+  "44": "oklch(0.93 0.04 280)", // Rhode Island — lavender
+  "36": "oklch(0.92 0.05 100)", // New York — yellow-green
+  "34": "oklch(0.92 0.04 250)", // New Jersey — periwinkle
+  "42": "oklch(0.92 0.04 350)", // Pennsylvania — dusty rose
+  "24": "oklch(0.93 0.05 60)",  // Maryland — light tan
+  "11": "oklch(0.88 0.06 350)", // D.C. — pink
+  "51": "oklch(0.93 0.05 160)", // Virginia — mint
+}
 
-// Stylised Atlantic coast curve — decorative, not geographic.
-const COAST_PATH =
-  "M 940 60 C 920 140 880 200 870 240 C 860 270 840 285 830 305 C 805 345 770 370 745 405 C 700 445 640 460 600 495 C 560 525 500 545 470 580 L 460 600"
+const INK = "oklch(0.32 0.06 50)"
+const INK_SOFT = "oklch(0.42 0.05 50)"
+const PAPER = "oklch(0.96 0.02 80)"
+const OCEAN = "oklch(0.92 0.025 215)"
 
 function buildPolyline(pts: ItineraryDay[]): string {
   if (pts.length < 2) return ""
   return "M " + pts.map((p) => `${p.mapX} ${p.mapY}`).join(" L ")
 }
 
-function aggregateHubState(hubDays: ItineraryDay[], summaries: Map<number, DaySummary>, now: Date): PinState {
-  const states = hubDays.map((d) =>
-    derivePinState(d, summaries.get(d.dayNumber)?.published ?? false, now),
-  )
+function aggregateHubState(hd: ItineraryDay[], summaries: Map<number, DaySummary>, now: Date): PinState {
+  const states = hd.map((d) => derivePinState(d, summaries.get(d.dayNumber)?.published ?? false, now))
   if (states.includes("current")) return "current"
-  // partial done = treat as current (trip is in progress through this hub)
   if (states.includes("done") && states.includes("upcoming")) return "current"
   if (states.every((s) => s === "done")) return "done"
   return "upcoming"
@@ -92,7 +93,6 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
     return out
   }, [summaries, now])
 
-  // Trail: split at the current day (or last day if trip is over).
   const splitIdx = useMemo(() => {
     if (phase === "before") return 0
     if (phase === "after") return days.length - 1
@@ -101,99 +101,114 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
   }, [phase, currentN])
 
   const solidPath = useMemo(() => buildPolyline(days.slice(0, splitIdx + 1)), [splitIdx])
-  const dashedPath = useMemo(
-    () => buildPolyline(days.slice(Math.max(0, splitIdx))),
-    [splitIdx],
-  )
+  const dashedPath = useMemo(() => buildPolyline(days.slice(Math.max(0, splitIdx))), [splitIdx])
 
   return (
     <svg
-      viewBox="0 0 1000 600"
+      viewBox={`0 0 ${MAP_VIEWBOX.w} ${MAP_VIEWBOX.h}`}
       xmlns="http://www.w3.org/2000/svg"
-      className="block w-full h-auto rounded-2xl border border-surface-border bg-surface text-foreground"
-      aria-label="Mapa cesty USA"
+      className="block h-auto w-full rounded-2xl shadow-xl shadow-black/15 ring-1 ring-black/5"
+      aria-label="Mapa cesty"
+      style={{ backgroundColor: PAPER }}
     >
-      {/* state labels in background */}
-      {STATE_LABELS.map((s) => (
-        <text
-          key={s.name}
-          x={s.x}
-          y={s.y}
-          textAnchor="middle"
-          style={{ fill: "var(--muted-foreground)" }}
-          fontSize={11}
-          fontWeight={500}
-          letterSpacing={1.5}
-          opacity={0.35}
-        >
-          {s.name}
-        </text>
-      ))}
-
-      {/* decorative Atlantic coast */}
-      <path
-        d={COAST_PATH}
-        fill="none"
-        style={{ stroke: "var(--muted-foreground)" }}
-        strokeWidth={1.5}
-        strokeLinecap="round"
-        opacity={0.25}
-        strokeDasharray="3 6"
-      />
-
-      {/* city labels */}
-      {cities.map((c) => (
-        <g key={c.name}>
-          <circle
-            cx={c.mapX}
-            cy={c.mapY}
-            r={2.5}
-            style={{ fill: "var(--muted-foreground)" }}
-            opacity={0.55}
+      <defs>
+        {/* Light ink jitter for borders — gives them a hand-drawn quiver. */}
+        <filter id="ink-jitter" x="-2%" y="-2%" width="104%" height="104%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" seed="7" />
+          <feDisplacementMap in="SourceGraphic" scale="0.9" />
+        </filter>
+        {/* Bigger displacement for fills — gives state washes their loose edge. */}
+        <filter id="wash" x="-3%" y="-3%" width="106%" height="106%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" seed="11" />
+          <feDisplacementMap in="SourceGraphic" scale="4" />
+          <feGaussianBlur stdDeviation="0.4" />
+        </filter>
+        {/* Paper grain — applied subtly behind everything. */}
+        <filter id="paper-grain" x="0" y="0" width="100%" height="100%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="2" />
+          <feColorMatrix
+            type="matrix"
+            values="0 0 0 0 0.30   0 0 0 0 0.22   0 0 0 0 0.12   0 0 0 0.10 0"
           />
-          <text
-            x={c.mapX + 7}
-            y={c.mapY + 4}
-            style={{ fill: "var(--muted-foreground)" }}
-            fontSize={11}
-            opacity={0.75}
-          >
-            {c.name}
-          </text>
-        </g>
-      ))}
+          <feComposite in2="SourceGraphic" operator="in" />
+        </filter>
+        <radialGradient id="paper-glow" cx="50%" cy="35%" r="80%">
+          <stop offset="0%" stopColor={PAPER} stopOpacity="1" />
+          <stop offset="100%" stopColor="oklch(0.91 0.03 70)" stopOpacity="1" />
+        </radialGradient>
+      </defs>
 
-      {/* trail */}
+      {/* Paper + ocean background */}
+      <rect width="100%" height="100%" fill="url(#paper-glow)" />
+      <rect width="100%" height="100%" fill={OCEAN} opacity="0.55" />
+      <rect width="100%" height="100%" fill="black" opacity="0.04" filter="url(#paper-grain)" />
+
+      {/* Watercolor state washes */}
+      <g filter="url(#wash)">
+        {STATE_PATHS.map((s) => (
+          <path
+            key={`fill-${s.id}`}
+            d={s.d}
+            fill={STATE_FILL[s.id] ?? "oklch(0.92 0.02 80)"}
+            opacity={0.85}
+          />
+        ))}
+      </g>
+
+      {/* Ink state borders */}
+      <g filter="url(#ink-jitter)" fill="none" strokeLinejoin="round" strokeLinecap="round">
+        {STATE_PATHS.map((s) => (
+          <path key={`stroke-${s.id}`} d={s.d} stroke={INK} strokeWidth={1.2} opacity={0.85} />
+        ))}
+      </g>
+
+      {/* State labels — handwritten */}
+      <g style={{ fontFamily: '"Caveat Variable", cursive' }}>
+        {STATE_PATHS.map((s) => (
+          <text
+            key={`label-${s.id}`}
+            x={s.label_x}
+            y={s.label_y}
+            textAnchor="middle"
+            fontSize={s.label === "D.C." || s.label === "R.I." ? 14 : 22}
+            fontWeight={500}
+            opacity={0.5}
+            fill={INK}
+            style={{ pointerEvents: "none" }}
+          >
+            {s.label}
+          </text>
+        ))}
+      </g>
+
+      {/* Dashed trail (upcoming) */}
       {dashedPath && (
         <path
           d={dashedPath}
           fill="none"
-          style={{ stroke: "var(--muted-foreground)" }}
-          strokeWidth={2}
-          strokeDasharray="6 6"
+          stroke={INK_SOFT}
+          strokeWidth={1.5}
+          strokeDasharray="4 5"
           strokeLinecap="round"
-          opacity={0.45}
+          opacity={0.55}
         />
       )}
+      {/* Solid trail (done) */}
       {solidPath && (
         <path
           d={solidPath}
           fill="none"
-          style={{ stroke: "var(--brand)" }}
-          strokeWidth={3}
+          stroke="var(--brand)"
+          strokeWidth={2.5}
           strokeLinecap="round"
-          opacity={0.7}
+          opacity={0.8}
         />
       )}
 
-      {/* pins */}
+      {/* Pins */}
       {pins.map((pin) =>
         pin.kind === "hub" ? (
-          <HubPin
-            key={pin.day.hub}
-            pin={pin}
-            onClick={() => onHubClick(pin.day.hub!)}
-          />
+          <HubPin key={pin.day.hub} pin={pin} onClick={() => onHubClick(pin.day.hub!)} />
         ) : (
           <SinglePin
             key={pin.day.dayNumber}
@@ -208,7 +223,7 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
 
 function SinglePin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
   const { day, state, highlight } = pin
-  const radius = highlight ? 14 : 11
+  const radius = highlight ? 11 : 9
   const isUpcoming = state === "upcoming"
 
   return (
@@ -221,10 +236,10 @@ function SinglePin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) 
         <circle
           cx={day.mapX}
           cy={day.mapY}
-          r={radius + 8}
+          r={radius + 7}
           fill="none"
-          style={{ stroke: "var(--brand)" }}
-          strokeWidth={2}
+          stroke="var(--brand)"
+          strokeWidth={1.5}
           opacity={0.55}
           className="animate-ping"
         />
@@ -233,23 +248,19 @@ function SinglePin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) 
         cx={day.mapX}
         cy={day.mapY}
         r={radius}
-        style={{
-          fill: isUpcoming ? "var(--muted)" : "var(--brand)",
-          stroke: "var(--surface-border)",
-        }}
-        fillOpacity={isUpcoming ? 0.55 : 1}
-        strokeWidth={1.5}
+        fill={isUpcoming ? PAPER : "var(--brand)"}
+        stroke={INK}
+        strokeWidth={1.2}
       />
       <text
         x={day.mapX}
         y={day.mapY + 0.5}
         textAnchor="middle"
         dominantBaseline="central"
-        fontSize={11}
+        fontSize={10}
         fontWeight={700}
-        style={{
-          fill: isUpcoming ? "var(--muted-foreground)" : "var(--brand-foreground)",
-        }}
+        fill={isUpcoming ? INK : "var(--brand-foreground)"}
+        style={{ pointerEvents: "none", fontFamily: '"Caveat Variable", cursive' }}
       >
         {day.dayNumber}
       </text>
@@ -259,7 +270,7 @@ function SinglePin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) 
 
 function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
   const { day, hubDays = [], state, highlight } = pin
-  const radius = highlight ? 26 : 22
+  const radius = highlight ? 20 : 17
   const isUpcoming = state === "upcoming"
 
   return (
@@ -272,10 +283,10 @@ function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
         <circle
           cx={day.mapX}
           cy={day.mapY}
-          r={radius + 8}
+          r={radius + 7}
           fill="none"
-          style={{ stroke: "var(--brand)" }}
-          strokeWidth={2}
+          stroke="var(--brand)"
+          strokeWidth={1.5}
           opacity={0.55}
           className="animate-ping"
         />
@@ -284,12 +295,9 @@ function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
         cx={day.mapX}
         cy={day.mapY}
         r={radius}
-        style={{
-          fill: isUpcoming ? "var(--muted)" : "var(--brand)",
-          stroke: "var(--surface-border)",
-        }}
-        fillOpacity={isUpcoming ? 0.55 : 1}
-        strokeWidth={1.5}
+        fill={isUpcoming ? PAPER : "var(--brand)"}
+        stroke={INK}
+        strokeWidth={1.3}
       />
       <text
         x={day.mapX}
@@ -298,25 +306,20 @@ function HubPin({ pin, onClick }: { pin: RenderedPin; onClick: () => void }) {
         dominantBaseline="central"
         fontSize={13}
         fontWeight={700}
-        style={{
-          fill: isUpcoming ? "var(--muted-foreground)" : "var(--brand-foreground)",
-        }}
+        fill={isUpcoming ? INK : "var(--brand-foreground)"}
+        style={{ pointerEvents: "none", fontFamily: '"Caveat Variable", cursive' }}
       >
         NYC
       </text>
-      {/* day-count badge */}
       <g transform={`translate(${day.mapX + radius - 4} ${day.mapY - radius + 4})`}>
-        <circle
-          r={10}
-          style={{ fill: "var(--badge)", stroke: "var(--surface)" }}
-          strokeWidth={1.5}
-        />
+        <circle r={8} fill={PAPER} stroke={INK} strokeWidth={1} />
         <text
           textAnchor="middle"
           dominantBaseline="central"
           fontSize={11}
           fontWeight={700}
-          style={{ fill: "var(--badge-foreground)" }}
+          fill={INK}
+          style={{ pointerEvents: "none", fontFamily: '"Caveat Variable", cursive' }}
         >
           {hubDays.length}
         </text>

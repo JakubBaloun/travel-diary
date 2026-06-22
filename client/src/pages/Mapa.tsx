@@ -30,7 +30,7 @@ function Mapa() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-3 pb-10 pt-4 sm:px-6 sm:pt-8">
+    <div className="mx-auto max-w-md px-4 pb-10 pt-4 sm:pt-8">
       <UsaMap
         summaries={summaries}
         onPinClick={handlePinClick}
