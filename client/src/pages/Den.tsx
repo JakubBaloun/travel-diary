@@ -3,12 +3,13 @@ import { useNavigate, useParams, Navigate } from "react-router-dom"
 import { ArrowLeft, ChevronLeft, ChevronRight, Map as MapIcon, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
+  fetchAdminDay,
   fetchDay,
   fetchDaySummaries,
   type DayData,
   type DaySummary,
 } from "@/lib/api"
-import { isAuthenticated } from "@/lib/auth"
+import { isAdminAuthenticated, isAuthenticated } from "@/lib/auth"
 import { getDay } from "@/data/itinerary"
 import { formatDate } from "@/lib/utils"
 import EditorialGallery from "@/components/day/EditorialGallery"
@@ -28,7 +29,9 @@ function Den() {
   useEffect(() => {
     if (!Number.isFinite(dayNumber) || !itinerary) return
     let aborted = false
-    Promise.all([fetchDay(dayNumber), fetchDaySummaries()])
+    // Admin previews unpublished days via the admin endpoint.
+    const loadDay = isAdminAuthenticated() ? fetchAdminDay(dayNumber) : fetchDay(dayNumber)
+    Promise.all([loadDay, fetchDaySummaries()])
       .then(([d, sums]) => {
         if (aborted) return
         setDay(d)
