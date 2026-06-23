@@ -93,10 +93,10 @@ function AdminDayList({ onSelectDay, onLogout }: Props) {
 
           return (
             <li key={d.dayNumber}>
-              <div className="flex items-center gap-3 rounded-xl border border-surface-border bg-card p-3">
+              <div className="flex items-center gap-2 rounded-xl border border-surface-border bg-card p-2.5 sm:gap-3 sm:p-3">
                 <button
                   onClick={() => onSelectDay(d.dayNumber)}
-                  className="flex flex-1 items-center gap-3 text-left focus-visible:outline-none"
+                  className="flex min-w-0 flex-1 items-center gap-3 text-left focus-visible:outline-none"
                 >
                   {heroThumb ? (
                     <img
@@ -111,11 +111,11 @@ function AdminDayList({ onSelectDay, onLogout }: Props) {
                     </div>
                   )}
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1.5">
-                      <span className="flex size-5 items-center justify-center rounded-full bg-badge text-[10px] font-bold text-badge-foreground">
+                    <div className="flex min-w-0 items-center gap-1.5">
+                      <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-badge text-[10px] font-bold text-badge-foreground">
                         {d.dayNumber}
                       </span>
-                      <p className="truncate text-sm font-semibold">{d.title}</p>
+                      <p className="min-w-0 flex-1 truncate text-sm font-semibold">{d.title}</p>
                       {highlight && (
                         <Sparkles className="size-3.5 shrink-0 text-brand" aria-label="Highlight" />
                       )}
@@ -123,7 +123,7 @@ function AdminDayList({ onSelectDay, onLogout }: Props) {
                     <p className="truncate text-xs text-muted-foreground">
                       {formatDate(d.date)} · {d.place}
                     </p>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="truncate text-xs text-muted-foreground">
                       {photoCount > 0 ? `${photoCount} fotek` : "bez fotek"}
                       {!published && " · nepublikováno"}
                     </p>
@@ -133,7 +133,7 @@ function AdminDayList({ onSelectDay, onLogout }: Props) {
                 <button
                   onClick={() => togglePublished(d.dayNumber, !published)}
                   disabled={isBusy}
-                  className={`flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors disabled:opacity-50 ${
+                  className={`flex size-9 shrink-0 items-center justify-center rounded-lg transition-colors disabled:opacity-50 sm:size-10 ${
                     published
                       ? "bg-brand text-brand-foreground"
                       : "bg-muted text-muted-foreground"
@@ -146,7 +146,7 @@ function AdminDayList({ onSelectDay, onLogout }: Props) {
 
                 <button
                   onClick={() => onSelectDay(d.dayNumber)}
-                  className="flex size-10 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground"
+                  className="hidden size-10 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground sm:flex"
                   aria-label="Upravit"
                 >
                   <ChevronRight className="size-5" />
