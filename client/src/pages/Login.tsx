@@ -44,12 +44,14 @@ function Login() {
 
       <div className="flex w-full max-w-sm flex-col items-center gap-6 rounded-2xl border border-surface-border bg-surface p-8 text-surface-foreground shadow-xl">
         <div className="text-center">
-          <h1 className="text-2xl font-bold tracking-tight">Travel Diary</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Zadej heslo pro přístup
-          </p>
+          <h1 className="text-2xl font-bold tracking-tight">Amerika 2026</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Vložte heslo</p>
         </div>
-        <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3" autoComplete="off">
+        <form
+          onSubmit={handleSubmit}
+          className="flex w-full flex-col gap-3"
+          autoComplete="off"
+        >
           <Input
             name="password"
             type="password"

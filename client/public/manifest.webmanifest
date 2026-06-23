@@ -1,7 +1,7 @@
 {
-  "name": "USA Léto 2026 — Travel Diary",
-  "short_name": "USA 2026",
-  "description": "Soukromý cestovní deník USA 2026",
+  "name": "Amerika 2026",
+  "short_name": "Amerika 2026",
+  "description": "Soukromý deník z cesty po USA 2026",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

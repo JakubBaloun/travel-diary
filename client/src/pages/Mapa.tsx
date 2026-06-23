@@ -8,6 +8,7 @@ import UsaMap from "@/components/map/UsaMap"
 import HubModal from "@/components/map/HubModal"
 import Hero from "@/components/home/Hero"
 import DayCarousel from "@/components/home/DayCarousel"
+import TripStatus from "@/components/home/TripStatus"
 import ThemeSwitcher from "@/components/ThemeSwitcher"
 import { Button } from "@/components/ui/button"
 
@@ -61,7 +62,10 @@ function Mapa() {
       </div>
       <div className="mx-auto mt-6 max-w-5xl sm:mt-8">
         <DayCarousel days={days} summaries={summaries} onSelect={handlePinClick} />
-        <div className="mt-6 px-4 sm:mt-8 sm:px-6 lg:px-0">
+        <div className="mt-6 sm:mt-8">
+          <TripStatus />
+        </div>
+        <div className="mt-4 px-4 sm:mt-6 sm:px-6 lg:px-0">
           <UsaMap
             summaries={summaries}
             onPinClick={handlePinClick}

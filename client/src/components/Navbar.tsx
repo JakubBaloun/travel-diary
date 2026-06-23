@@ -24,7 +24,7 @@ function Navbar() {
             <Compass className="size-4" />
           </span>
           <span className="text-base font-semibold tracking-tight">
-            Travel Diary
+            Amerika 2026
           </span>
         </button>
 

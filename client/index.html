@@ -2,8 +2,8 @@
 <html lang="cs">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="apple-touch-icon" href="/favicon.svg?v=2" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta
       name="viewport"
@@ -13,18 +13,18 @@
     <meta name="theme-color" content="#f7f0e0" media="(prefers-color-scheme: light)" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="USA 2026" />
-    <meta name="description" content="Soukromý cestovní deník — USA léto 2026" />
+    <meta name="apple-mobile-web-app-title" content="Amerika 2026" />
+    <meta name="description" content="Soukromý deník z cesty po USA 2026" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>USA Léto 2026 · Travel Diary</title>
+    <title>Amerika 2026</title>
     <script>
       // Anti-flash: apply persisted theme before the first paint.
       (function () {
         try {
-          var THEMES = ["light","dark","sunset","ocean","forest","sepia","midnight"];
-          var DARK = ["dark","sunset","ocean","forest","midnight"];
+          var THEMES = ["light","dark","sunset","sepia"];
+          var DARK = ["dark","sunset"];
           var t = localStorage.getItem("travel-diary-theme");
-          if (THEMES.indexOf(t) === -1) t = "sepia";
+          if (THEMES.indexOf(t) === -1) t = "dark";
           var root = document.documentElement;
           root.dataset.theme = t;
           if (DARK.indexOf(t) !== -1) root.classList.add("dark");

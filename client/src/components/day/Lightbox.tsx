@@ -45,7 +45,7 @@ function Lightbox({ photos, startIndex, onClose }: Props) {
       {photos.length > 1 && (
         <>
           <button
-            className="absolute left-4 rounded-lg p-1.5 text-white/70 hover:text-white"
+            className="absolute left-4 top-1/2 -translate-y-1/2 rounded-lg p-1.5 text-white/70 hover:text-white"
             onClick={(e) => {
               e.stopPropagation()
               setIndex((i) => (i - 1 + photos.length) % photos.length)
