@@ -34,12 +34,12 @@ async function postLogin(path: string, password: string): Promise<string> {
 }
 
 export async function login(password: string): Promise<void> {
-  const token = await postLogin("/auth/login", password)
+  const token = await postLogin("/auth/login", password.toLowerCase())
   localStorage.setItem(READER_TOKEN_KEY, token)
 }
 
 export async function loginAdmin(password: string): Promise<void> {
-  const token = await postLogin("/auth/admin/login", password)
+  const token = await postLogin("/auth/admin/login", password.toLowerCase())
   localStorage.setItem(ADMIN_TOKEN_KEY, token)
 }
 
