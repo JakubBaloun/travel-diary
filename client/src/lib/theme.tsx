@@ -29,7 +29,7 @@ export const themeMeta: Record<Theme, ThemeMeta> = {
 }
 
 export const STORAGE_KEY = "travel-diary-theme"
-const DEFAULT_THEME: Theme = "dark"
+const DEFAULT_THEME: Theme = "light"
 
 function isTheme(value: unknown): value is Theme {
   return typeof value === "string" && (themes as readonly string[]).includes(value)

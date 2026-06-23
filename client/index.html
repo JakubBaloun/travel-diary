@@ -24,7 +24,7 @@
           var THEMES = ["light","dark","sunset","sepia"];
           var DARK = ["dark","sunset"];
           var t = localStorage.getItem("travel-diary-theme");
-          if (THEMES.indexOf(t) === -1) t = "dark";
+          if (THEMES.indexOf(t) === -1) t = "light";
           var root = document.documentElement;
           root.dataset.theme = t;
           if (DARK.indexOf(t) !== -1) root.classList.add("dark");
