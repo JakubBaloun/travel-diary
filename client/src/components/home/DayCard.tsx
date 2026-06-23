@@ -21,7 +21,7 @@ function DayCard({ day, photoUrl, onClick }: DayCardProps) {
     <button
       type="button"
       onClick={onClick}
-      className="group relative aspect-[3/4] w-[240px] shrink-0 snap-start overflow-hidden rounded-xl bg-muted text-left shadow-md transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-[260px] lg:w-[280px]"
+      className="group relative aspect-[4/3] w-[280px] shrink-0 snap-start overflow-hidden rounded-xl bg-muted text-left shadow-md transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 sm:w-[320px] lg:w-[360px]"
     >
       {hasPhoto && (
         <>
