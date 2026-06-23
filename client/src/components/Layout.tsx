@@ -1,14 +1,18 @@
 import { Outlet, useLocation } from "react-router-dom"
 import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 
 function Layout() {
   const { pathname } = useLocation()
   const showNavbar = pathname !== "/mapa"
 
   return (
-    <div className="min-h-dvh bg-page pb-[env(safe-area-inset-bottom)] text-foreground">
+    <div className="flex min-h-dvh flex-col bg-page text-foreground">
       {showNavbar && <Navbar />}
-      <Outlet />
+      <main className="flex-1">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
   )
 }

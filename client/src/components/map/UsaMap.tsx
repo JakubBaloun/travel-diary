@@ -8,7 +8,12 @@ import {
   type ItineraryDay,
   type PinState,
 } from "@/data/itinerary";
-import { STATE_PATHS, USA_BG_PATH } from "@/data/state-paths";
+import {
+  CANADA_PATH,
+  MEXICO_PATH,
+  STATE_PATHS,
+  USA_OUTLINE_PATH,
+} from "@/data/state-paths";
 import { type DaySummary } from "@/lib/api";
 import { useSvgPanZoom } from "./useSvgPanZoom";
 
@@ -181,6 +186,33 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
         style={{ touchAction: "none" }}
         {...zoom.handlers}
       >
+        {/* Land backdrop — USA + Canada + Mexico get a subtle muted tint so
+            the landmass reads against the page background. NE state fills sit
+            on top with the full muted colour for emphasis. */}
+        <g
+          fill="var(--muted)"
+          opacity={0.45}
+          stroke="none"
+          pointerEvents="none"
+        >
+          <path d={USA_OUTLINE_PATH} />
+          <path d={CANADA_PATH} />
+          <path d={MEXICO_PATH} />
+        </g>
+
+        {/* Canada + Mexico outline only (USA outline is re-stroked thicker
+            below). */}
+        <g
+          stroke="var(--border)"
+          strokeWidth={0.6}
+          strokeLinejoin="round"
+          fill="none"
+          pointerEvents="none"
+        >
+          <path d={CANADA_PATH} />
+          <path d={MEXICO_PATH} />
+        </g>
+
         <g stroke="var(--border)" strokeWidth={0.6} strokeLinejoin="round">
           {STATE_PATHS.map((s) => {
             const active = hoveredState === s.id;
@@ -199,13 +231,14 @@ function UsaMap({ summaries, onPinClick, onHubClick }: Props) {
           })}
         </g>
 
+        {/* Country outline drawn on top so the US-CA / US-MX / coastline
+            border reads thicker than the internal state/province borders. */}
         <path
-          d={USA_BG_PATH}
+          d={USA_OUTLINE_PATH}
           fill="none"
-          stroke="var(--foreground)"
-          strokeWidth={0.9}
+          stroke="var(--border)"
+          strokeWidth={1.6}
           strokeLinejoin="round"
-          opacity={0.35}
           pointerEvents="none"
         />
 

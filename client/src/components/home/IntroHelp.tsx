@@ -189,7 +189,7 @@ function HelpContent() {
       />
       <Hint
         emoji="🗺️"
-        text="Na interaktivní mapě jsou postupně zobrazovány kolečka s číslem dní a trasou, tak jak jednotlivá místa projíždíme."
+        text="Na interaktivní mapě jsou postupně zobrazovány kolečka s číslem dne a trasou, tak jak jednotlivá místa projíždíme."
       />
       <Hint
         emoji="🇺🇸"

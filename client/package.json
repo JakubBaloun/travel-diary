@@ -40,9 +40,9 @@
     "globals": "^17.6.0",
     "tailwindcss": "^4.3.0",
     "topojson-client": "^3.1.0",
+    "topojson-server": "^3.0.1",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
-    "us-atlas": "^3.0.1",
     "vite": "^8.0.12"
   }
 }

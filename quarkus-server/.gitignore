@@ -34,3 +34,7 @@ nb-configuration.xml
 
 # Vim
 *.swp
+
+# Local env
+.env
+.env.local
